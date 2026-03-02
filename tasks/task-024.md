@@ -1,7 +1,7 @@
 ---
 id: task-024
 title: 書類一覧のselect最適化
-parents: [パフォーマンス]
+parents: [品質]
 status: done
 priority: low
 depends_on: []

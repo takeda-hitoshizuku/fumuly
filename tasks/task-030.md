@@ -1,7 +1,7 @@
 ---
 id: task-030
 title: 金額編集エラー時のフィードバック追加
-parents: [UX, バグ修正]
+parents: [UI/UX, バグ修正]
 status: done
 depends_on: []
 this_week: false

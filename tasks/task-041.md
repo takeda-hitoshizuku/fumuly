@@ -1,7 +1,7 @@
 ---
 id: task-041
 title: 書類のアーカイブ機能と自動クリーンアップ
-parents: [UX, プライバシー]
+parents: [UI/UX, 法的文書]
 status: done
 priority: medium
 depends_on: []

@@ -1,7 +1,7 @@
 ---
 id: task-037
 title: プラン種別（月額/年額）の表示対応
-parents: [マネタイズ, UI]
+parents: [マネタイズ, UI/UX]
 status: done
 priority: medium
 depends_on: [task-002, task-036]

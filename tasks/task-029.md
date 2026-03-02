@@ -1,7 +1,7 @@
 ---
 id: task-029
 title: プロフィール未入力時の告知
-parents: [UX]
+parents: [UI/UX]
 status: done
 priority: medium
 depends_on: []

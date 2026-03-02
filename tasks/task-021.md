@@ -1,7 +1,7 @@
 ---
 id: task-021
 title: プライバシーポリシー・同意説明の実態乖離修正
-parents: [法務, プライバシー]
+parents: [法的文書]
 status: done
 depends_on: []
 this_week: true

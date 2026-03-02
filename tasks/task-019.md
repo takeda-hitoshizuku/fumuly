@@ -1,7 +1,7 @@
 ---
 id: task-019
 title: DB操作のエラーハンドリング全般
-parents: [安定性, UX]
+parents: [品質, UI/UX]
 status: done
 priority: medium
 depends_on: []

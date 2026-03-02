@@ -1,7 +1,7 @@
 ---
 id: task-007
 title: Google認証の追加
-parents: [認証]
+parents: [セキュリティ]
 status: done
 priority: low
 depends_on: []

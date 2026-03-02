@@ -1,7 +1,7 @@
 ---
 id: task-035
 title: プロフィール未設定時の視覚的催促（赤ポチ＋文末メッセージ）
-parents: [UX改善, オンボーディング]
+parents: [UI/UX, オンボーディング]
 status: done
 priority: medium
 depends_on: []

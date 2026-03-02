@@ -1,7 +1,7 @@
 ---
 id: task-022
 title: 書類一覧・ホーム画面のstale data問題
-parents: [UX, バグ]
+parents: [UI/UX, バグ修正]
 status: done
 priority: high
 depends_on: []

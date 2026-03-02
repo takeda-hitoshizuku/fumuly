@@ -1,13 +1,13 @@
 ---
 id: task-039
 title: 利用方法ページ（/guide）の作成
-parents: [LP, UX]
-status: in-progress
+parents: [LP, UI/UX]
+status: done
 priority: high
 depends_on: []
 this_week: true
-completed_at: null
-progress: 0
+completed_at: 2026-03-02
+progress: 100
 note: docs/Fumuly_機能・使い方まとめ.md を元にページを作成
 ---
 

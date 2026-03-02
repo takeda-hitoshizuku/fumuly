@@ -1,7 +1,7 @@
 ---
 id: task-027
 title: 会話履歴の保持期間ポリシー実装
-parents: [プライバシー, バックエンド]
+parents: [法的文書, バックエンド]
 status: done
 priority: low
 depends_on: []

@@ -1,7 +1,7 @@
 ---
 id: task-031
 title: 金額nullの書類に金額を追加できるようにする
-parents: [UX, 機能]
+parents: [UI/UX, 機能]
 status: done
 depends_on: []
 this_week: false

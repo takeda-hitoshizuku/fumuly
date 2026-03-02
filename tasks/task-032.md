@@ -1,7 +1,7 @@
 ---
 id: task-032
 title: 金額候補の選択 + サマリー再生成機能
-parents: [UX, AI]
+parents: [UI/UX, AI]
 status: done
 depends_on: []
 this_week: false

@@ -1,7 +1,7 @@
 ---
 id: task-023
 title: Claude JSON.parseのtry/catch追加
-parents: [安定性]
+parents: [品質]
 status: done
 priority: high
 depends_on: []

@@ -1,7 +1,7 @@
 ---
 id: task-036
 title: 料金ページ分割（公開/認証後）
-parents: [マネタイズ, UI]
+parents: [マネタイズ, UI/UX]
 status: done
 priority: high
 depends_on: [task-002]

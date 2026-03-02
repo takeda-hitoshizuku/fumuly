@@ -1,7 +1,7 @@
 ---
 id: task-018
 title: パスワードリセット機能の実装
-parents: [認証, UX]
+parents: [セキュリティ, UI/UX]
 status: done
 priority: medium
 depends_on: [task-003]

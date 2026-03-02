@@ -1,7 +1,7 @@
 ---
 id: task-011
 title: LP・設定画面のフッターリンク整備
-parents: [UI]
+parents: [UI/UX]
 status: done
 depends_on: []
 this_week: true

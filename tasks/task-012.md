@@ -1,7 +1,7 @@
 ---
 id: task-012
 title: チャット応答のMarkdownレンダリング判断
-parents: [UI]
+parents: [UI/UX]
 status: done
 depends_on: []
 this_week: false
