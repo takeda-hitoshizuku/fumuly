@@ -2,13 +2,13 @@
 id: task-042
 title: セッション永続化（アプリ閉じるとログアウトされる問題）
 parents: [セキュリティ, バグ修正]
-status: in-progress
+status: done
 priority: critical
 depends_on: []
 this_week: true
-completed_at: null
-progress: 30
-note: 調査完了、原因特定済み。修正実装待ち
+completed_at: 2026-03-03
+progress: 100
+note: refreshSession追加・Cookie30日延長で修正完了
 estimated_hours: 3
 ---
 
@@ -71,8 +71,18 @@ if (!user) {
 AuthGuardの `visibilitychange` ハンドラで、タブ復帰時にも
 `refreshSession()` → `getUser()` の順で呼ぶようにする。
 
+## 実施した修正
+
+### AuthGuard（components/fumuly/auth-guard.tsx）
+- `getUser()` でユーザーが取れなかった場合、即リダイレクトせず `refreshSession()` を試みるよう変更
+- サーバーエラー（status >= 500）とネットワークエラー（fetchエラー）時はリダイレクトしない
+- try-catchでネットワーク例外もキャッチしてオフライン対応
+
+### Cookie設定（lib/supabase.ts）
+- Cookie有効期限を7日→30日に延長（`maxAge: 86400 * 30`）
+
 ## 関連ファイル
 
-- `components/fumuly/auth-guard.tsx` — メイン修正対象
-- `lib/supabase.ts` — Cookie設定の改善
-- `middleware.ts` — 参考（現状のミドルウェアセッションリフレッシュ）
+- `components/fumuly/auth-guard.tsx` — メイン修正
+- `lib/supabase.ts` — Cookie有効期限延長
+- `middleware.ts` — 参考（ミドルウェアレベルのセッション処理）
