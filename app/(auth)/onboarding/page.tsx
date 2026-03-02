@@ -52,6 +52,9 @@ export default function OnboardingPage() {
       })
       .eq("id", user.id);
 
+    // GA4コンバージョンイベント送信（オンボーディング完了＝登録完了）
+    window.gtag?.("event", "sign_up_complete");
+
     router.push("/home");
   };
 

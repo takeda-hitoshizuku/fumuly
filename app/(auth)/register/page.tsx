@@ -57,6 +57,9 @@ export default function RegisterPage() {
       return;
     }
 
+    // GA4コンバージョンイベント送信
+    window.gtag?.("event", "sign_up", { method: "email" });
+
     // フルリロードでCookieをサーバーに反映させる
     window.location.href = "/onboarding";
   };

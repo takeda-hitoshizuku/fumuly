@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_JP } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { UpdateBanner } from "@/components/fumuly/update-banner";
 import "./globals.css";
 
@@ -62,6 +63,7 @@ export default function RootLayout({
         <UpdateBanner />
         {children}
       </body>
+      <GoogleAnalytics gaId="G-LED5D1MCK9" />
     </html>
   );
 }
