@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { Mail, Lock, Loader2, User } from "lucide-react";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,15 +19,15 @@ export default function RegisterPage() {
     setGoogleLoading(true);
     setError("");
 
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
 
-    if (error) {
-      setError("Googleログインに失敗しました");
+    if (oauthError) {
+      setError("うまく接続できませんでした。もう一度試してみてください");
       setGoogleLoading(false);
     }
   };
@@ -45,7 +43,7 @@ export default function RegisterPage() {
       return;
     }
 
-    const { error } = await supabase.auth.signUp({
+    const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -53,7 +51,7 @@ export default function RegisterPage() {
       },
     });
 
-    if (error) {
+    if (signUpError) {
       setError("登録に失敗しました。別のメールアドレスをお試しください。");
       setLoading(false);
       return;

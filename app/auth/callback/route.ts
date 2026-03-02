@@ -7,6 +7,9 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/home";
 
+  // オープンリダイレクト防止
+  const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/home";
+
   if (code) {
     const cookieStore = await cookies();
     const supabase = createServerClient(
@@ -26,9 +29,23 @@ export async function GET(request: Request) {
       }
     );
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+    if (!error && data.user) {
+      // オンボーディング未完了のユーザーはオンボーディングへ
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("onboarding_done")
+        .eq("id", data.user.id)
+        .single();
+
+      if (!profile?.onboarding_done) {
+        return NextResponse.redirect(`${origin}/onboarding`);
+      }
+      return NextResponse.redirect(`${origin}${safeNext}`);
+    }
+
+    if (error) {
+      console.error("OAuth callback error:", error.message);
     }
   }
 

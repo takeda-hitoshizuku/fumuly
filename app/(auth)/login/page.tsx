@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { Mail, Lock, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
@@ -18,15 +16,15 @@ export default function LoginPage() {
     setGoogleLoading(true);
     setError("");
 
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
 
-    if (error) {
-      setError("Googleログインに失敗しました");
+    if (oauthError) {
+      setError("うまく接続できませんでした。もう一度試してみてください");
       setGoogleLoading(false);
     }
   };
@@ -41,12 +39,12 @@ export default function LoginPage() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error: loginError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error) {
+    if (loginError) {
       setError("メールアドレスまたはパスワードが正しくありません");
       setLoading(false);
       return;
