@@ -1,31 +1,46 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
-import { Lock, Loader2 } from "lucide-react";
+import { Lock, Loader2, ArrowLeft } from "lucide-react";
 
 export default function UpdatePasswordPage() {
-  const router = useRouter();
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [sessionReady, setSessionReady] = useState(false);
+  const [sessionError, setSessionError] = useState(false);
 
   useEffect(() => {
-    // URLのハッシュフラグメントからセッションを復元
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = hashParams.get("access_token");
-    const refreshToken = hashParams.get("refresh_token");
+    const restoreSession = async () => {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get("access_token");
+      const refreshToken = hashParams.get("refresh_token");
 
-    if (accessToken && refreshToken) {
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      });
-    }
+      if (accessToken && refreshToken) {
+        const { error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+
+        // セッション復元後にURLからトークンを除去
+        window.history.replaceState(null, "", window.location.pathname);
+
+        if (error) {
+          setSessionError(true);
+          return;
+        }
+        setSessionReady(true);
+      } else {
+        // トークンがない（直接アクセス）
+        setSessionError(true);
+      }
+    };
+    restoreSession();
   }, []);
 
   const handleUpdate = async (e: React.FormEvent) => {
@@ -55,6 +70,44 @@ export default function UpdatePasswordPage() {
     }, 2000);
   };
 
+  // セッション復元中
+  if (!sessionReady && !sessionError) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-bold text-primary">Fumuly</h1>
+          <Loader2 className="h-6 w-6 animate-spin mx-auto text-sub" />
+        </div>
+      </div>
+    );
+  }
+
+  // セッション復元失敗（トークンなし or 期限切れ）
+  if (sessionError) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-bold text-primary">Fumuly</h1>
+          <p className="text-sm text-sub">
+            リンクの有効期限が切れているようです
+          </p>
+        </div>
+
+        <div className="bg-white rounded-xl p-4 text-sm text-sub text-center">
+          <p>もう一度リセットメールを送信してください</p>
+        </div>
+
+        <Link
+          href="/reset-password"
+          className="flex items-center justify-center text-sm text-primary font-medium"
+        >
+          <ArrowLeft className="h-4 w-4 mr-1" />
+          パスワードリセットに戻る
+        </Link>
+      </div>
+    );
+  }
+
   if (success) {
     return (
       <div className="space-y-6">
@@ -83,6 +136,7 @@ export default function UpdatePasswordPage() {
           <Input
             type="password"
             placeholder="新しいパスワード（6文字以上）"
+            autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="pl-10 h-12"
