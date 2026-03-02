@@ -261,6 +261,25 @@ export async function POST(req: NextRequest) {
         { user_id: userId, role: "user", content: encrypt(message) },
         { user_id: userId, role: "assistant", content: encrypt(reply) },
       ]);
+
+      // Trim old conversations (keep latest 50 per user)
+      const MAX_CONVERSATIONS = 50;
+      const { data: oldest } = await supabaseAdmin
+        .from("conversations")
+        .select("created_at")
+        .eq("user_id", userId)
+        .is("document_id", null)
+        .order("created_at", { ascending: false })
+        .range(MAX_CONVERSATIONS, MAX_CONVERSATIONS);
+
+      if (oldest && oldest.length > 0) {
+        await supabaseAdmin
+          .from("conversations")
+          .delete()
+          .eq("user_id", userId)
+          .is("document_id", null)
+          .lt("created_at", oldest[0].created_at);
+      }
     }
 
     // remaining = null for admin (unlimited)
