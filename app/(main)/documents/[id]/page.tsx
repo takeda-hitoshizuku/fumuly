@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { PriorityBadge } from "@/components/fumuly/priority-badge";
 import {
@@ -74,23 +73,20 @@ export default function DocumentDetailPage() {
     if (!doc) return;
     setUpdating(true);
 
-    const newDone = !doc.is_done;
-    const { error } = await supabase
-      .from("documents")
-      .update({
-        is_done: newDone,
-        done_at: newDone ? new Date().toISOString() : null,
-      })
-      .eq("id", doc.id);
+    const res = await fetch("/api/documents", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: doc.id, action: "toggle_done" }),
+    });
 
-    if (error) {
-      console.error("Toggle done error:", error);
+    if (!res.ok) {
       alert("更新に失敗しました");
       setUpdating(false);
       return;
     }
 
-    setDoc({ ...doc, is_done: newDone, done_at: newDone ? new Date().toISOString() : null });
+    const updated = await res.json();
+    setDoc({ ...doc, ...updated });
     setUpdating(false);
   };
 
@@ -98,23 +94,20 @@ export default function DocumentDetailPage() {
     if (!doc) return;
     setUpdating(true);
 
-    const newArchived = !doc.is_archived;
-    const { error } = await supabase
-      .from("documents")
-      .update({
-        is_archived: newArchived,
-        archived_at: newArchived ? new Date().toISOString() : null,
-      })
-      .eq("id", doc.id);
+    const res = await fetch("/api/documents", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: doc.id, action: "toggle_archive" }),
+    });
 
-    if (error) {
-      console.error("Toggle archive error:", error);
+    if (!res.ok) {
       alert("更新に失敗しました");
       setUpdating(false);
       return;
     }
 
-    setDoc({ ...doc, is_archived: newArchived, archived_at: newArchived ? new Date().toISOString() : null });
+    const updated = await res.json();
+    setDoc({ ...doc, ...updated });
     setUpdating(false);
   };
 
@@ -122,10 +115,9 @@ export default function DocumentDetailPage() {
     if (!doc) return;
     setDeleting(true);
 
-    const { error } = await supabase.from("documents").delete().eq("id", doc.id);
+    const res = await fetch(`/api/documents?id=${doc.id}`, { method: "DELETE" });
 
-    if (error) {
-      console.error("Delete document error:", error);
+    if (!res.ok) {
       alert("削除に失敗しました");
       setDeleting(false);
       return;
@@ -214,11 +206,12 @@ export default function DocumentDetailPage() {
                       return;
                     }
                     setSavingAmount(true);
-                    const { error } = await supabase
-                      .from("documents")
-                      .update({ amount: val })
-                      .eq("id", doc.id);
-                    if (!error) {
+                    const res = await fetch("/api/documents", {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ id: doc.id, action: "update_amount", amount: val }),
+                    });
+                    if (res.ok) {
                       setDoc({ ...doc, amount: val });
                     } else {
                       alert("保存に失敗しました");
