@@ -72,9 +72,11 @@ export default function ChatPage() {
 
   // Auto scroll to bottom
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    requestAnimationFrame(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }
+    });
   }, [messages, loading]);
 
   const MAX_MESSAGE_LENGTH = 3000;
