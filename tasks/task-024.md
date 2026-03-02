@@ -1,6 +1,6 @@
 ---
 id: task-024
-title: 書類一覧のページネーション・select最適化
+title: 書類一覧のselect最適化
 parents: [パフォーマンス]
 status: waiting
 priority: low
@@ -8,7 +8,7 @@ depends_on: []
 this_week: false
 completed_at: null
 progress: 0
-note: "フェーズ3: リリース（優先16）。ページネーション"
+note: "select最適化のみ。書類データはページネーション不要（件数が限定的）"
 estimated_hours: 0.1
 ---
 
@@ -23,13 +23,18 @@ estimated_hours: 0.1
 
 ## 実装
 
-### 1. select最適化
+### select最適化
 ```typescript
 .select("id, sender, type, amount, deadline, category, summary, recommended_action, is_done, created_at")
 ```
 `detailed_summary` と `priority` を一覧から除外。
 
-### 2. ページネーション（将来）
-- `.range(0, 49)` で50件ずつ取得
-- 「もっと見る」ボタンまたは無限スクロール
-- 現時点ではユーザー数が少ないのでselect最適化だけでOK
+## ページネーションについて（見送り）
+
+書類データは現時点でページネーション不要。
+
+- 現時点ではユーザー数が少なく、1ユーザーあたりの書類数も限定的
+- データが増えた場合はselect最適化 + `.limit()` で十分対応可能
+- 無限スクロールやページネーションUIは、実際にパフォーマンス問題が顕在化してから検討する
+
+※ チャット履歴の件数制限（ユーザーごと最新50件を保持・超過分を自動削除）はtask-027で別途対応済み
