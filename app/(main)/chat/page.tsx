@@ -47,23 +47,22 @@ export default function ChatPage() {
         setProfileIncomplete(true);
       }
 
-      const { data } = await supabase
-        .from("conversations")
-        .select("*")
-        .eq("user_id", user.id)
-        .is("document_id", null)
-        .order("created_at", { ascending: true })
-        .limit(50);
-
-      if (data) {
-        setMessages(
-          data.map((m) => ({
-            id: m.id,
-            role: m.role as "user" | "assistant",
-            content: m.content,
-            created_at: m.created_at,
-          }))
-        );
+      // Fetch history via API (server-side decryption)
+      try {
+        const res = await fetch("/api/chat/history");
+        if (res.ok) {
+          const data = await res.json();
+          setMessages(
+            data.messages.map((m: { id: string; role: string; content: string; created_at: string }) => ({
+              id: m.id,
+              role: m.role as "user" | "assistant",
+              content: m.content,
+              created_at: m.created_at,
+            }))
+          );
+        }
+      } catch (err) {
+        console.error("Failed to load chat history:", err);
       }
       setInitialLoading(false);
     };
@@ -274,10 +273,10 @@ export default function ChatPage() {
                   <Bot className="h-3.5 w-3.5 text-primary" />
                 </div>
                 <div className="bg-white border rounded-2xl rounded-bl-md px-4 py-3">
-                  <div className="flex gap-1">
-                    <span className="w-2 h-2 bg-sub/40 rounded-full animate-bounce" />
-                    <span className="w-2 h-2 bg-sub/40 rounded-full animate-bounce [animation-delay:0.1s]" />
-                    <span className="w-2 h-2 bg-sub/40 rounded-full animate-bounce [animation-delay:0.2s]" />
+                  <div className="flex gap-1.5">
+                    <span className="w-2 h-2 bg-primary/50 rounded-full animate-bounce" />
+                    <span className="w-2 h-2 bg-primary/50 rounded-full animate-bounce [animation-delay:0.15s]" />
+                    <span className="w-2 h-2 bg-primary/50 rounded-full animate-bounce [animation-delay:0.3s]" />
                   </div>
                 </div>
               </div>
