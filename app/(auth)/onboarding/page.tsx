@@ -23,11 +23,12 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // Google OAuth経由の新規登録時にsign_upイベントを送信
+  // 新規登録時にsign_upイベントを送信（email/google両方に対応）
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("method") === "google") {
-      window.gtag?.("event", "sign_up", { method: "google" });
+    const method = params.get("method");
+    if (method === "email" || method === "google") {
+      window.gtag?.("event", "sign_up", { method });
     }
   }, []);
 
@@ -47,7 +48,7 @@ export default function OnboardingPage() {
     } = await supabase.auth.getUser();
     if (!user) return;
 
-    await supabase
+    const { error: updateError } = await supabase
       .from("profiles")
       .update({
         income_type: incomeType || null,
@@ -59,6 +60,11 @@ export default function OnboardingPage() {
         onboarding_done: true,
       })
       .eq("id", user.id);
+
+    if (updateError) {
+      setLoading(false);
+      return;
+    }
 
     // GA4コンバージョンイベント送信（オンボーディング完了＝登録完了）
     window.gtag?.("event", "sign_up_complete");
