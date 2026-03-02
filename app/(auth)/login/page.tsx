@@ -147,12 +147,17 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <p className="text-center text-sm text-sub">
-        アカウントをお持ちでない方は{" "}
-        <Link href="/register" className="text-primary font-medium">
-          新規登録
+      <div className="text-center space-y-2">
+        <Link href="/reset-password" className="text-sm text-sub hover:text-primary">
+          パスワードをお忘れですか？
         </Link>
-      </p>
+        <p className="text-sm text-sub">
+          アカウントをお持ちでない方は{" "}
+          <Link href="/register" className="text-primary font-medium">
+            新規登録
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
