@@ -398,11 +398,6 @@ export default function SettingsPage() {
           )}
         </Button>
       </div>
-
-      {/* Version */}
-      <p className="text-center text-xs text-ignore mt-6">
-        Fumuly v0.1.0
-      </p>
     </div>
   );
 }
