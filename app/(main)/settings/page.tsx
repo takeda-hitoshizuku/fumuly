@@ -28,6 +28,8 @@ import {
   Crown,
   BookOpen,
   Archive,
+  Bell,
+  BellOff,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -44,6 +46,9 @@ export default function SettingsPage() {
   const [planInfo, setPlanInfo] = useState<PlanInfo | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
   const [upgraded, setUpgraded] = useState(false);
+  const [pushSupported, setPushSupported] = useState(false);
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [pushLoading, setPushLoading] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -51,6 +56,61 @@ export default function SettingsPage() {
       setUpgraded(true);
     }
   }, []);
+
+  useEffect(() => {
+    // Push通知サポートチェック
+    if ("serviceWorker" in navigator && "PushManager" in window) {
+      setPushSupported(true);
+      navigator.serviceWorker.ready.then((reg) => {
+        reg.pushManager.getSubscription().then((sub) => {
+          setPushEnabled(!!sub);
+        });
+      });
+    }
+  }, []);
+
+  const togglePush = async () => {
+    if (!pushSupported) return;
+    setPushLoading(true);
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      if (pushEnabled) {
+        // 通知OFF: unsubscribe
+        const sub = await reg.pushManager.getSubscription();
+        if (sub) {
+          await fetch(`/api/push/subscribe?endpoint=${encodeURIComponent(sub.endpoint)}`, { method: "DELETE" });
+          await sub.unsubscribe();
+        }
+        setPushEnabled(false);
+      } else {
+        // 通知ON: subscribe
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted") {
+          alert("通知が許可されていません。端末の設定から通知を許可してください。");
+          setPushLoading(false);
+          return;
+        }
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+        });
+        const subJson = sub.toJSON();
+        await fetch("/api/push/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            endpoint: subJson.endpoint,
+            keys: subJson.keys,
+          }),
+        });
+        setPushEnabled(true);
+      }
+    } catch (error) {
+      console.error("Push toggle error:", error);
+      alert("通知設定の変更に失敗しました");
+    }
+    setPushLoading(false);
+  };
 
   useEffect(() => {
     const fetchPlan = async () => {
@@ -206,6 +266,48 @@ export default function SettingsPage() {
           ) : null}
         </div>
       </div>
+
+      {/* Push notification setting */}
+      {pushSupported && (
+        <div className="bg-background rounded-2xl border p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-accent/10 rounded-full flex items-center justify-center">
+                {pushEnabled ? (
+                  <Bell className="h-4 w-4 text-accent" />
+                ) : (
+                  <BellOff className="h-4 w-4 text-sub" />
+                )}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  プッシュ通知
+                </p>
+                <p className="text-xs text-sub">
+                  {pushEnabled ? "リマインダーを通知で受け取れます" : "通知をオンにするとリマインダーが届きます"}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={togglePush}
+              disabled={pushLoading}
+              className={`relative w-11 h-6 rounded-full transition-colors ${
+                pushEnabled ? "bg-accent" : "bg-ignore/30"
+              }`}
+            >
+              {pushLoading ? (
+                <Loader2 className="h-3 w-3 animate-spin absolute top-1.5 left-4 text-white" />
+              ) : (
+                <span
+                  className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                    pushEnabled ? "translate-x-[22px]" : "translate-x-0.5"
+                  }`}
+                />
+              )}
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-1">
         {/* Profile */}

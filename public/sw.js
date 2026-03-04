@@ -56,7 +56,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static assets (_next/static): cache-first
+  // Static assets (_next/static/): cache-first
   if (url.pathname.startsWith("/_next/static/")) {
     event.respondWith(
       caches.match(request).then((cached) => {
@@ -70,4 +70,52 @@ self.addEventListener("fetch", (event) => {
     );
     return;
   }
+});
+
+// Push notification handler
+self.addEventListener("push", (event) => {
+  const defaultData = {
+    title: "fumuly",
+    body: "リマインダーがあります",
+    url: "/home",
+  };
+
+  let data = defaultData;
+  try {
+    if (event.data) {
+      data = { ...defaultData, ...event.data.json() };
+    }
+  } catch {
+    // JSON parse failure: use defaults
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: "/icons/icon-192x192.png",
+      badge: "/icons/icon-192x192.png",
+      data: { url: data.url },
+      tag: data.tag || "fumuly-reminder",
+      renotify: true,
+    })
+  );
+});
+
+// Notification click handler
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || "/home";
+
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      // Focus existing window if available
+      for (const client of clients) {
+        if (new URL(client.url).pathname === url && "focus" in client) {
+          return client.focus();
+        }
+      }
+      // Otherwise open new window
+      return self.clients.openWindow(url);
+    })
+  );
 });

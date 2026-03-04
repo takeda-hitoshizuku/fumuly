@@ -2,13 +2,13 @@
 id: task-057
 title: プッシュ通知 — Web Push APIによるリマインド通知
 parents: [機能, PWA]
-status: waiting
+status: done
 priority: medium
 depends_on: [task-055]
-this_week: false
-completed_at: null
-progress: 0
-note: ""
+this_week: true
+completed_at: 2026-03-05
+progress: 100
+note: "VAPID鍵生成、push_subscriptionsテーブル、Service Worker pushハンドラ、subscribe/send API、設定画面トグルUI、Vercel Cron(15分間隔)実装"
 estimated_hours: 6
 ---
 

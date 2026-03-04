@@ -2,13 +2,13 @@
 id: task-058
 title: 書類フィールド全編集対応（金額以外）
 parents: [機能, UI/UX]
-status: waiting
+status: done
 priority: medium
 depends_on: [task-052]
 this_week: true
-completed_at: null
-progress: 0
-note: ""
+completed_at: 2026-03-05
+progress: 100
+note: "task-052実装時にsender/type/deadline/categoryの編集機能も同時実装済み"
 estimated_hours: 3
 ---
 

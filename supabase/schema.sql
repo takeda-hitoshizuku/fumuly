@@ -175,3 +175,36 @@ CREATE POLICY "Users can delete own reminders"
 -- インデックス
 CREATE INDEX IF NOT EXISTS idx_reminders_user_id ON reminders(user_id);
 CREATE INDEX IF NOT EXISTS idx_reminders_remind_at ON reminders(user_id, remind_at) WHERE is_sent = FALSE;
+
+-- =============================================
+
+-- Fumuly: push_subscriptions テーブル（Web Push通知）
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+  id                 UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id            UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  endpoint           TEXT NOT NULL,
+  keys_p256dh        TEXT NOT NULL,
+  keys_auth          TEXT NOT NULL,
+  created_at         TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, endpoint)
+);
+
+-- Row Level Security
+ALTER TABLE push_subscriptions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can select own subscriptions"
+  ON push_subscriptions FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own subscriptions"
+  ON push_subscriptions FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own subscriptions"
+  ON push_subscriptions FOR DELETE
+  USING (auth.uid() = user_id);
+
+-- NOTE: UPDATEポリシーは意図的に省略。Subscriptionの更新はservice_role（API経由）のみ。
+
+-- インデックス
+CREATE INDEX IF NOT EXISTS idx_push_subscriptions_user_id ON push_subscriptions(user_id);
