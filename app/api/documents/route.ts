@@ -286,6 +286,16 @@ export async function PATCH(req: NextRequest) {
       if (Object.keys(updateData).length === 0) {
         return NextResponse.json({ error: "更新するフィールドがありません" }, { status: 400 });
       }
+    } else if (action === "update_summaries") {
+      // 再生成結果の保存（暗号化対象フィールド）
+      const { summary, recommended_action, detailed_summary } = body;
+      if (!summary || !recommended_action) {
+        return NextResponse.json({ error: "サマリーと推奨アクションは必須です" }, { status: 400 });
+      }
+      updateData = encryptFields(
+        { summary, recommended_action, detailed_summary: detailed_summary || "" },
+        [...ENCRYPTED_DOC_FIELDS]
+      );
     } else {
       return NextResponse.json({ error: "不正なアクションです" }, { status: 400 });
     }
@@ -295,7 +305,7 @@ export async function PATCH(req: NextRequest) {
       .update(updateData)
       .eq("id", id)
       .eq("user_id", user.id)
-      .select("is_done, done_at, is_archived, archived_at, amount, sender, type, deadline, category")
+      .select("is_done, done_at, is_archived, archived_at, amount, sender, type, deadline, category, summary, recommended_action, detailed_summary")
       .single();
 
     if (error) {
@@ -303,7 +313,9 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "更新に失敗しました" }, { status: 500 });
     }
 
-    return NextResponse.json(updated);
+    // 暗号化フィールドを復号して返却
+    const decrypted = decryptFields(updated, [...ENCRYPTED_DOC_FIELDS]);
+    return NextResponse.json(decrypted);
   } catch (error) {
     console.error("Documents PATCH error:", error);
     return NextResponse.json({ error: "サーバーエラー" }, { status: 500 });

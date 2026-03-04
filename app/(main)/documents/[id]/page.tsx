@@ -23,6 +23,7 @@ import {
   Pencil,
   Check,
   Undo2,
+  RefreshCw,
 } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -58,6 +59,8 @@ export default function DocumentDetailPage() {
   const [editingField, setEditingField] = useState<string | null>(null);
   const [fieldInput, setFieldInput] = useState("");
   const [savingField, setSavingField] = useState(false);
+  const [fieldsChanged, setFieldsChanged] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
 
   useEffect(() => {
     const fetchDocument = async () => {
@@ -125,12 +128,63 @@ export default function DocumentDetailPage() {
     if (res.ok) {
       const updated = await res.json();
       setDoc({ ...doc, ...updated });
+      setFieldsChanged(true);
     } else {
       const data = await res.json().catch(() => null);
       alert(data?.error || "保存に失敗しました");
     }
     setSavingField(false);
     if (resetEditing) setEditingField(null);
+  };
+
+  const handleRegenerate = async () => {
+    if (!doc) return;
+    setRegenerating(true);
+    try {
+      const res = await fetch("/api/regenerate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sender: doc.sender,
+          type: doc.type,
+          amount: doc.amount,
+          deadline: doc.deadline,
+          category: doc.category,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        alert(data?.error || "再生成に失敗しました");
+        setRegenerating(false);
+        return;
+      }
+      const regenerated = await res.json();
+
+      // 再生成結果をDBに保存
+      const saveRes = await fetch("/api/documents", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: doc.id,
+          action: "update_summaries",
+          summary: regenerated.summary,
+          recommended_action: regenerated.recommended_action,
+          detailed_summary: regenerated.detailed_summary,
+        }),
+      });
+      if (saveRes.ok) {
+        const updated = await saveRes.json();
+        setDoc({ ...doc, ...updated });
+        setFieldsChanged(false);
+      } else {
+        // 再生成は成功したがDB保存に失敗 → 画面だけ更新
+        setDoc({ ...doc, ...regenerated });
+        setFieldsChanged(false);
+      }
+    } catch {
+      alert("再生成に失敗しました");
+    }
+    setRegenerating(false);
   };
 
   const handleDelete = async () => {
@@ -303,6 +357,7 @@ export default function DocumentDetailPage() {
                     if (res.ok) {
                       const updated = await res.json();
                       setDoc({ ...doc, ...updated });
+                      setFieldsChanged(true);
                     } else {
                       alert("保存に失敗しました");
                     }
@@ -397,6 +452,27 @@ export default function DocumentDetailPage() {
             AIによる読み取りです。金額・期限は原本と照合してください。
           </p>
         </div>
+
+        {/* Regenerate button */}
+        {fieldsChanged && (
+          <button
+            onClick={handleRegenerate}
+            disabled={regenerating}
+            className="w-full flex items-center justify-center gap-2 py-3 bg-accent/10 text-accent rounded-xl text-sm font-medium active:bg-accent/20 transition-colors disabled:opacity-50"
+          >
+            {regenerating ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                サマリーを再生成中...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4" />
+                内容が変更されました — サマリーを再生成
+              </>
+            )}
+          </button>
+        )}
 
         {/* Recommended action */}
         <div className="bg-primary/5 rounded-2xl p-4">
