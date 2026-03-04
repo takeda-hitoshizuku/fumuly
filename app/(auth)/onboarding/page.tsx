@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/lib/supabase";
 import { Loader2, ChevronRight, ChevronLeft, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -43,33 +42,35 @@ export default function OnboardingPage() {
   const handleComplete = async () => {
     setLoading(true);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          income_type: incomeType || null,
+          monthly_income: monthlyIncome ? parseInt(monthlyIncome) : null,
+          debt_total: debtTotal ? parseInt(debtTotal) : null,
+          has_adhd: hasAdhd,
+          phone_difficulty: phoneDifficulty,
+          current_situation: currentSituation || null,
+          onboarding_done: true,
+        }),
+      });
 
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({
-        income_type: incomeType || null,
-        monthly_income: monthlyIncome ? parseInt(monthlyIncome) : null,
-        debt_total: debtTotal ? parseInt(debtTotal) : null,
-        has_adhd: hasAdhd,
-        phone_difficulty: phoneDifficulty,
-        current_situation: currentSituation || null,
-        onboarding_done: true,
-      })
-      .eq("id", user.id);
+      if (!res.ok) {
+        alert("プロフィールの保存に失敗しました。もう一度お試しください。");
+        setLoading(false);
+        return;
+      }
 
-    if (updateError) {
+      // GA4コンバージョンイベント送信（オンボーディング完了＝登録完了）
+      window.gtag?.("event", "sign_up_complete");
+
+      router.push("/home");
+    } catch {
+      alert("ネットワークエラーが発生しました。接続を確認してもう一度お試しください。");
       setLoading(false);
-      return;
     }
-
-    // GA4コンバージョンイベント送信（オンボーディング完了＝登録完了）
-    window.gtag?.("event", "sign_up_complete");
-
-    router.push("/home");
   };
 
   const steps = [

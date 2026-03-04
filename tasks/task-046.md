@@ -2,12 +2,12 @@
 id: task-046
 title: オンボーディングの暗号化漏れ・エラー表示追加
 parents: [セキュリティ, UI/UX]
-status: waiting
+status: done
 priority: high
 depends_on: []
 this_week: true
-completed_at: null
-progress: 0
+completed_at: 2026-03-05
+progress: 100
 note: "current_situationの平文保存修正 + エラーフィードバック追加"
 estimated_hours: 1
 ---
