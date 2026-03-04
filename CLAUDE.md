@@ -87,6 +87,12 @@ Fumulyの価値は「書類を登録した後」にこそある。
 - Vercel（ホスティング）
 - PWA対応
 
+## Vercelデプロイ
+
+- デプロイは **Git push による自動デプロイのみ** を使用する（GitHub連携済み）
+- `vercel deploy` 等の **Vercel CLIによるデプロイは禁止**（アカウント取り違えの原因になるため）
+- Vercel CLIはログ確認（`vercel logs`）等の参照用途に限定する
+
 ## Supabase DB操作
 
 スキーマ変更（ALTER TABLE, CREATE POLICY等）はSupabase Management APIで実行する。
