@@ -492,6 +492,7 @@ export default function ScanPage() {
                             handleSelectAmount(val);
                           }
                         }}
+                        aria-label="金額を確定"
                         className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center"
                       >
                         <Check className="h-4 w-4 text-primary" />
@@ -613,6 +614,7 @@ export default function ScanPage() {
                 />
                 <button
                   onClick={() => handleRemoveImage(i)}
+                  aria-label={`画像${i + 1}を削除`}
                   className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center"
                 >
                   <X className="h-3 w-3 text-white" />

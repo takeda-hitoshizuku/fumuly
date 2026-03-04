@@ -92,11 +92,12 @@ export default function DocumentsPage() {
             <TabsTrigger
               key={tab.value}
               value={tab.value}
+              aria-label={counts[tab.value as Filter] > 0 ? `${tab.label}（${counts[tab.value as Filter]}件）` : tab.label}
               className="text-xs px-3 py-1.5 rounded-full data-[state=active]:bg-primary data-[state=active]:text-white"
             >
               {tab.label}
               {counts[tab.value as Filter] > 0 && (
-                <span className="ml-1 text-[10px]">
+                <span className="ml-1 text-[10px]" aria-hidden="true">
                   {counts[tab.value as Filter]}
                 </span>
               )}

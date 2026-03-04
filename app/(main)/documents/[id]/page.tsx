@@ -223,6 +223,7 @@ export default function DocumentDetailPage() {
                 <button
                   onClick={() => saveField("sender", fieldInput)}
                   disabled={savingField}
+                  aria-label="送付元を確定"
                   className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center"
                 >
                   {savingField ? <Loader2 className="h-3 w-3 animate-spin text-primary" /> : <Check className="h-4 w-4 text-primary" />}
@@ -233,6 +234,7 @@ export default function DocumentDetailPage() {
                 <p className="font-bold text-lg text-foreground">{doc.sender}</p>
                 <button
                   onClick={() => { setFieldInput(doc.sender); setEditingField("sender"); }}
+                  aria-label="送付元を編集"
                   className="w-7 h-7 bg-ignore/10 rounded-full flex items-center justify-center"
                 >
                   <Pencil className="h-3 w-3 text-ignore" />
@@ -254,6 +256,7 @@ export default function DocumentDetailPage() {
                 <button
                   onClick={() => saveField("type", fieldInput)}
                   disabled={savingField}
+                  aria-label="書類種別を確定"
                   className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center"
                 >
                   {savingField ? <Loader2 className="h-3 w-3 animate-spin text-primary" /> : <Check className="h-4 w-4 text-primary" />}
@@ -264,6 +267,7 @@ export default function DocumentDetailPage() {
                 <p className="text-foreground">{doc.type}</p>
                 <button
                   onClick={() => { setFieldInput(doc.type); setEditingField("type"); }}
+                  aria-label="書類種別を編集"
                   className="w-7 h-7 bg-ignore/10 rounded-full flex items-center justify-center"
                 >
                   <Pencil className="h-3 w-3 text-ignore" />
@@ -306,6 +310,7 @@ export default function DocumentDetailPage() {
                     setEditingAmount(false);
                   }}
                   disabled={savingAmount}
+                  aria-label="金額を確定"
                   className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center"
                 >
                   {savingAmount ? (
@@ -325,6 +330,7 @@ export default function DocumentDetailPage() {
                     setAmountInput(String(doc.amount));
                     setEditingAmount(true);
                   }}
+                  aria-label="金額を編集"
                   className="w-7 h-7 bg-ignore/10 rounded-full flex items-center justify-center"
                 >
                   <Pencil className="h-3 w-3 text-ignore" />
@@ -357,6 +363,7 @@ export default function DocumentDetailPage() {
                 <button
                   onClick={() => saveField("deadline", fieldInput)}
                   disabled={savingField}
+                  aria-label="期限を確定"
                   className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center"
                 >
                   {savingField ? <Loader2 className="h-3 w-3 animate-spin text-primary" /> : <Check className="h-4 w-4 text-primary" />}
@@ -367,6 +374,7 @@ export default function DocumentDetailPage() {
                 <p className="font-medium text-foreground">{doc.deadline}</p>
                 <button
                   onClick={() => { setFieldInput(doc.deadline || ""); setEditingField("deadline"); }}
+                  aria-label="期限を編集"
                   className="w-7 h-7 bg-ignore/10 rounded-full flex items-center justify-center"
                 >
                   <Pencil className="h-3 w-3 text-ignore" />
@@ -467,6 +475,7 @@ export default function DocumentDetailPage() {
                 onClick={toggleArchive}
                 disabled={updating}
                 variant="outline"
+                aria-label="アーカイブ"
                 className="h-12 px-4 rounded-xl"
               >
                 <Archive className="h-4 w-4" />
@@ -479,6 +488,7 @@ export default function DocumentDetailPage() {
               <Button
                 variant="outline"
                 size="icon"
+                aria-label="書類を削除"
                 className="h-12 w-12 rounded-xl border-urgent/30 text-urgent hover:bg-urgent/5"
               >
                 <Trash2 className="h-4 w-4" />

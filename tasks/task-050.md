@@ -2,12 +2,12 @@
 id: task-050
 title: アクセシビリティ改善（aria-label・フィルタバッジ）
 parents: [アクセシビリティ]
-status: waiting
+status: done
 priority: medium
 depends_on: []
-this_week: false
-completed_at: null
-progress: 0
+this_week: true
+completed_at: 2026-03-05
+progress: 100
 note: "アイコンボタンのaria-label追加、フィルタタブのバッジ読み上げ改善"
 estimated_hours: 1
 ---
