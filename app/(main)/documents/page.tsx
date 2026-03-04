@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { DocumentCard } from "@/components/fumuly/document-card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, AlertTriangle } from "lucide-react";
+import { DocumentsListSkeleton } from "@/components/fumuly/skeletons";
 
 interface Document {
   id: string;
@@ -107,9 +108,7 @@ export default function DocumentsPage() {
       </Tabs>
 
       {loading ? (
-        <div className="flex justify-center py-20">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
-        </div>
+        <DocumentsListSkeleton />
       ) : error ? (
         <div className="text-center py-16 space-y-3">
           <AlertTriangle className="h-8 w-8 text-sub mx-auto" />

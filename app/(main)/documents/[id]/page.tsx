@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import { DocumentDetailSkeleton } from "@/components/fumuly/skeletons";
 
 interface DocumentDetail {
   id: string;
@@ -204,8 +205,8 @@ export default function DocumentDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      <div className="px-4 pt-4 pb-24">
+        <DocumentDetailSkeleton />
       </div>
     );
   }

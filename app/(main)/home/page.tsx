@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { DocumentCard } from "@/components/fumuly/document-card";
 import { Button } from "@/components/ui/button";
 import { Camera, MessageCircle, AlertTriangle, Loader2, User } from "lucide-react";
+import { HomeSkeleton } from "@/components/fumuly/skeletons";
 
 interface Document {
   id: string;
@@ -118,9 +119,7 @@ export default function HomePage() {
       )}
 
       {loading ? (
-        <div className="flex justify-center py-20">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
-        </div>
+        <HomeSkeleton />
       ) : error ? (
         <div className="text-center py-16 space-y-3">
           <AlertTriangle className="h-8 w-8 text-sub mx-auto" />
