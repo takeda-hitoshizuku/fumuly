@@ -24,6 +24,8 @@ import {
   Check,
   Undo2,
   RefreshCw,
+  Bell,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -62,6 +64,9 @@ export default function DocumentDetailPage() {
   const [savingField, setSavingField] = useState(false);
   const [fieldsChanged, setFieldsChanged] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
+  const [reminders, setReminders] = useState<{ id: string; remind_at: string; type: string }[]>([]);
+  const [showReminderPicker, setShowReminderPicker] = useState(false);
+  const [savingReminder, setSavingReminder] = useState(false);
 
   useEffect(() => {
     const fetchDocument = async () => {
@@ -73,7 +78,25 @@ export default function DocumentDetailPage() {
       setLoading(false);
     };
 
+    const fetchReminders = async () => {
+      const res = await fetch(`/api/reminders?mode=all`);
+      if (res.ok) {
+        const data = await res.json();
+        // この書類のリマインダーのみフィルタ
+        setReminders(
+          (data || [])
+            .filter((r: { document_id: string }) => r.document_id === params.id)
+            .map((r: { id: string; remind_at: string; type: string }) => ({
+              id: r.id,
+              remind_at: r.remind_at,
+              type: r.type,
+            }))
+        );
+      }
+    };
+
     fetchDocument();
+    fetchReminders();
   }, [params.id]);
 
   const toggleDone = async () => {
@@ -136,6 +159,57 @@ export default function DocumentDetailPage() {
     }
     setSavingField(false);
     if (resetEditing) setEditingField(null);
+  };
+
+  const addReminder = async (remindAt: Date) => {
+    if (!doc) return;
+    setSavingReminder(true);
+    try {
+      const res = await fetch("/api/reminders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          document_id: doc.id,
+          remind_at: remindAt.toISOString(),
+          type: "in_app",
+        }),
+      });
+      if (res.ok) {
+        const reminder = await res.json();
+        setReminders((prev) => [...prev, { id: reminder.id, remind_at: reminder.remind_at, type: reminder.type }]);
+        setShowReminderPicker(false);
+      } else {
+        const data = await res.json().catch(() => null);
+        alert(data?.error || "リマインダーの設定に失敗しました");
+      }
+    } catch {
+      alert("リマインダーの設定に失敗しました");
+    }
+    setSavingReminder(false);
+  };
+
+  const deleteReminder = async (reminderId: string) => {
+    const res = await fetch(`/api/reminders?id=${reminderId}`, { method: "DELETE" });
+    if (res.ok) {
+      setReminders((prev) => prev.filter((r) => r.id !== reminderId));
+    } else {
+      alert("削除に失敗しました");
+    }
+  };
+
+  const getReminderPresets = () => {
+    if (!doc?.deadline) return [];
+    const deadline = new Date(doc.deadline);
+    if (isNaN(deadline.getTime())) return [];
+    const presets = [
+      { label: "当日", date: new Date(deadline) },
+      { label: "1日前", date: new Date(deadline.getTime() - 1 * 24 * 60 * 60 * 1000) },
+      { label: "3日前", date: new Date(deadline.getTime() - 3 * 24 * 60 * 60 * 1000) },
+      { label: "1週間前", date: new Date(deadline.getTime() - 7 * 24 * 60 * 60 * 1000) },
+    ];
+    // 過去の日付は除外
+    const now = new Date();
+    return presets.filter((p) => p.date > now);
   };
 
   const handleRegenerate = async () => {
@@ -483,6 +557,75 @@ export default function DocumentDetailPage() {
           <p className="text-sm text-foreground">
             {doc.recommended_action}
           </p>
+        </div>
+
+        {/* Reminder section */}
+        <div className="bg-white rounded-2xl border p-4">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs text-sub flex items-center gap-1">
+              <Bell className="h-3 w-3" />
+              リマインダー
+            </p>
+            {doc.deadline && !doc.is_done && !doc.is_archived && (
+              <button
+                onClick={() => setShowReminderPicker(!showReminderPicker)}
+                className="text-xs text-primary font-medium"
+              >
+                {showReminderPicker ? "閉じる" : "+ 追加"}
+              </button>
+            )}
+          </div>
+
+          {/* 既存リマインダー一覧 */}
+          {reminders.length > 0 ? (
+            <div className="space-y-2">
+              {reminders.map((r) => {
+                const d = new Date(r.remind_at);
+                const formatted = `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, "0")}`;
+                const isPast = d < new Date();
+                return (
+                  <div key={r.id} className="flex items-center justify-between py-1.5 px-2 bg-primary/5 rounded-lg">
+                    <span className={`text-sm ${isPast ? "text-sub line-through" : "text-foreground"}`}>
+                      {formatted}
+                    </span>
+                    <button
+                      onClick={() => deleteReminder(r.id)}
+                      aria-label="リマインダーを削除"
+                      className="w-6 h-6 flex items-center justify-center text-sub hover:text-urgent"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-xs text-sub">
+              {doc.deadline && !doc.is_done ? "リマインダーが設定されていません" : "期限のある書類にリマインダーを設定できます"}
+            </p>
+          )}
+
+          {/* リマインダー追加ピッカー */}
+          {showReminderPicker && (
+            <div className="mt-3 pt-3 border-t space-y-2">
+              <p className="text-xs text-sub">期限からの日数を選択</p>
+              <div className="flex flex-wrap gap-2">
+                {getReminderPresets().map((preset) => (
+                  <button
+                    key={preset.label}
+                    onClick={() => addReminder(preset.date)}
+                    disabled={savingReminder}
+                    className="text-xs px-3 py-1.5 bg-primary/10 text-primary rounded-full active:bg-primary/20 disabled:opacity-50"
+                  >
+                    {preset.label}（{preset.date.getMonth() + 1}/{preset.date.getDate()}）
+                  </button>
+                ))}
+                {getReminderPresets().length === 0 && (
+                  <p className="text-xs text-sub">期限が過去または近すぎるため、選択肢がありません</p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Detailed summary */}

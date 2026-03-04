@@ -141,3 +141,35 @@ CREATE POLICY "Users can delete own conversations"
 CREATE INDEX IF NOT EXISTS idx_conversations_user_id ON conversations(user_id);
 CREATE INDEX IF NOT EXISTS idx_conversations_document_id ON conversations(document_id);
 CREATE INDEX IF NOT EXISTS idx_conversations_created_at ON conversations(user_id, created_at);
+
+-- =============================================
+
+-- Fumuly: reminders テーブル（リマインダー）
+CREATE TABLE IF NOT EXISTS reminders (
+  id                 UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id            UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  document_id        UUID NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+  remind_at          TIMESTAMPTZ NOT NULL,
+  type               TEXT NOT NULL DEFAULT 'in_app',  -- 'in_app' | 'push' | 'calendar'
+  is_sent            BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at         TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Row Level Security
+ALTER TABLE reminders ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can select own reminders"
+  ON reminders FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own reminders"
+  ON reminders FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own reminders"
+  ON reminders FOR DELETE
+  USING (auth.uid() = user_id);
+
+-- インデックス
+CREATE INDEX IF NOT EXISTS idx_reminders_user_id ON reminders(user_id);
+CREATE INDEX IF NOT EXISTS idx_reminders_remind_at ON reminders(user_id, remind_at) WHERE is_sent = FALSE;

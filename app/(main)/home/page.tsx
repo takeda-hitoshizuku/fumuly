@@ -5,7 +5,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { DocumentCard } from "@/components/fumuly/document-card";
 import { Button } from "@/components/ui/button";
-import { Camera, MessageCircle, AlertTriangle, Loader2, User } from "lucide-react";
+import { Camera, MessageCircle, AlertTriangle, Loader2, User, Bell } from "lucide-react";
 import { HomeSkeleton } from "@/components/fumuly/skeletons";
 
 interface Document {
@@ -20,12 +20,25 @@ interface Document {
   is_done: boolean;
 }
 
+interface Reminder {
+  id: string;
+  remind_at: string;
+  document_id: string;
+  documents: {
+    sender: string;
+    type: string;
+    deadline: string | null;
+    category: string;
+  };
+}
+
 export default function HomePage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [profileIncomplete, setProfileIncomplete] = useState(false);
+  const [upcomingReminders, setUpcomingReminders] = useState<Reminder[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,6 +74,22 @@ export default function HomePage() {
       } catch {
         setError(true);
       }
+
+      // リマインダー取得（エラーでも無視）
+      try {
+        const remRes = await fetch("/api/reminders?mode=upcoming");
+        if (remRes.ok) {
+          const rems = await remRes.json();
+          // 今日〜3日以内のリマインダーのみ表示
+          const threeDaysLater = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+          setUpcomingReminders(
+            (rems || []).filter((r: Reminder) => new Date(r.remind_at) <= threeDaysLater)
+          );
+        }
+      } catch {
+        // リマインダー取得失敗は無視
+      }
+
       setLoading(false);
     };
 
@@ -116,6 +145,35 @@ export default function HomePage() {
             </div>
           </div>
         </Link>
+      )}
+
+      {/* Upcoming reminders */}
+      {upcomingReminders.length > 0 && (
+        <div className="mb-4 space-y-2">
+          {upcomingReminders.map((r) => {
+            const d = new Date(r.remind_at);
+            const now = new Date();
+            const diffHours = Math.max(0, Math.round((d.getTime() - now.getTime()) / (1000 * 60 * 60)));
+            const timeLabel = diffHours === 0 ? "まもなく" : diffHours < 24 ? `あと${diffHours}時間` : `あと${Math.ceil(diffHours / 24)}日`;
+            return (
+              <Link key={r.id} href={`/documents/${r.document_id}`}>
+                <div className="bg-accent/10 border border-accent/20 rounded-xl p-3 flex items-center gap-3 active:bg-accent/15 transition-colors">
+                  <div className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center shrink-0">
+                    <Bell className="h-4 w-4 text-accent" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {r.documents.sender}（{timeLabel}）
+                    </p>
+                    <p className="text-xs text-sub truncate">
+                      {r.documents.type}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       )}
 
       {loading ? (
