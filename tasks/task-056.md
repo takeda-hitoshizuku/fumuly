@@ -2,13 +2,13 @@
 id: task-056
 title: カレンダー連携 — Googleカレンダーに期限を登録
 parents: [機能, UI/UX]
-status: waiting
+status: done
 priority: medium
 depends_on: [task-055]
 this_week: true
-completed_at: null
-progress: 0
-note: ""
+completed_at: 2026-03-05
+progress: 100
+note: "書類詳細ページのリマインダーセクションにGoogleカレンダー追加ボタン実装"
 estimated_hours: 2
 ---
 
