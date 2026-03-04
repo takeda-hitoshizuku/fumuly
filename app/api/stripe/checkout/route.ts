@@ -85,10 +85,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const origin =
-      req.headers.get("origin") ||
-      process.env.NEXT_PUBLIC_APP_URL ||
-      "https://fumuly.com";
+    const origin = process.env.NEXT_PUBLIC_APP_URL || "https://fumuly.com";
 
     const session = await getStripe().checkout.sessions.create({
       customer: customerId,
