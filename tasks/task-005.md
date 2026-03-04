@@ -2,13 +2,13 @@
 id: task-005
 title: Web Push通知・リマインダー機能の実装
 parents: [機能]
-status: waiting
+status: done
 priority: low
 depends_on: [task-002]
 this_week: false
-completed_at: null
-progress: 0
-note: "フェーズ3: リリース（優先14）。Web Push通知"
+completed_at: 2026-03-05
+progress: 100
+note: "task-055（リマインダー）、task-056（カレンダー連携）、task-057（プッシュ通知）で実装完了"
 estimated_hours: 12
 ---
 
