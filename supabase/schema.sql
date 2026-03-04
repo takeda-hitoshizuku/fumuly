@@ -170,6 +170,8 @@ CREATE POLICY "Users can delete own reminders"
   ON reminders FOR DELETE
   USING (auth.uid() = user_id);
 
+-- NOTE: UPDATEポリシーは意図的に省略。リマインダーの更新はservice_role（API経由）のみ許可する設計。
+
 -- インデックス
 CREATE INDEX IF NOT EXISTS idx_reminders_user_id ON reminders(user_id);
 CREATE INDEX IF NOT EXISTS idx_reminders_remind_at ON reminders(user_id, remind_at) WHERE is_sent = FALSE;

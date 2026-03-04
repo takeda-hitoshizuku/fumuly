@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const mode = searchParams.get("mode"); // "upcoming" | "all"
+    const documentId = searchParams.get("document_id");
 
     let query = supabaseAdmin
       .from("reminders")
@@ -40,6 +41,11 @@ export async function GET(req: NextRequest) {
         documents!inner(sender, type, summary, deadline, category)
       `)
       .eq("user_id", user.id);
+
+    // 特定書類のリマインダーのみ取得
+    if (documentId) {
+      query = query.eq("document_id", documentId);
+    }
 
     if (mode === "upcoming") {
       // 未送信かつ未来のリマインダーのみ
@@ -80,6 +86,12 @@ export async function POST(req: NextRequest) {
 
     if (!document_id || !remind_at) {
       return NextResponse.json({ error: "書類IDとリマインド日時は必須です" }, { status: 400 });
+    }
+
+    // UUID形式バリデーション
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(document_id)) {
+      return NextResponse.json({ error: "不正な書類IDです" }, { status: 400 });
     }
 
     const validTypes = ["in_app", "push", "calendar"];
@@ -168,15 +180,25 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "IDが必要です" }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      return NextResponse.json({ error: "不正なIDです" }, { status: 400 });
+    }
+
+    const { data, error } = await supabaseAdmin
       .from("reminders")
       .delete()
       .eq("id", id)
-      .eq("user_id", user.id);
+      .eq("user_id", user.id)
+      .select("id");
 
     if (error) {
       console.error("Reminders DELETE error:", error);
       return NextResponse.json({ error: "削除に失敗しました" }, { status: 500 });
+    }
+
+    if (!data || data.length === 0) {
+      return NextResponse.json({ error: "リマインダーが見つかりません" }, { status: 404 });
     }
 
     return NextResponse.json({ success: true });

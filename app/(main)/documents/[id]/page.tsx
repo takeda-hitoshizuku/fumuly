@@ -79,18 +79,15 @@ export default function DocumentDetailPage() {
     };
 
     const fetchReminders = async () => {
-      const res = await fetch(`/api/reminders?mode=all`);
+      const res = await fetch(`/api/reminders?document_id=${params.id}`);
       if (res.ok) {
         const data = await res.json();
-        // この書類のリマインダーのみフィルタ
         setReminders(
-          (data || [])
-            .filter((r: { document_id: string }) => r.document_id === params.id)
-            .map((r: { id: string; remind_at: string; type: string }) => ({
-              id: r.id,
-              remind_at: r.remind_at,
-              type: r.type,
-            }))
+          (data || []).map((r: { id: string; remind_at: string; type: string }) => ({
+            id: r.id,
+            remind_at: r.remind_at,
+            type: r.type,
+          }))
         );
       }
     };
@@ -201,11 +198,17 @@ export default function DocumentDetailPage() {
     if (!doc?.deadline) return [];
     const deadline = new Date(doc.deadline);
     if (isNaN(deadline.getTime())) return [];
+    // JST朝9時にリマインドする（UTC+9 → UTCで0時）
+    const makeDate = (base: Date, dayOffset: number) => {
+      const d = new Date(base.getTime() + dayOffset * 24 * 60 * 60 * 1000);
+      d.setHours(9, 0, 0, 0); // ローカル時刻（JST）で朝9時
+      return d;
+    };
     const presets = [
-      { label: "当日", date: new Date(deadline) },
-      { label: "1日前", date: new Date(deadline.getTime() - 1 * 24 * 60 * 60 * 1000) },
-      { label: "3日前", date: new Date(deadline.getTime() - 3 * 24 * 60 * 60 * 1000) },
-      { label: "1週間前", date: new Date(deadline.getTime() - 7 * 24 * 60 * 60 * 1000) },
+      { label: "当日", date: makeDate(deadline, 0) },
+      { label: "1日前", date: makeDate(deadline, -1) },
+      { label: "3日前", date: makeDate(deadline, -3) },
+      { label: "1週間前", date: makeDate(deadline, -7) },
     ];
     // 過去の日付は除外
     const now = new Date();
