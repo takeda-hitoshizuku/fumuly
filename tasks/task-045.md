@@ -2,12 +2,12 @@
 id: task-045
 title: 複数タブでの書類操作競合対策
 parents: [バグ修正]
-status: waiting
+status: done
 priority: high
 depends_on: []
 this_week: true
-completed_at: null
-progress: 0
+completed_at: 2026-03-05
+progress: 100
 note: "toggleDone/ArchiveをDB状態ベースに変更"
 estimated_hours: 0.5
 ---

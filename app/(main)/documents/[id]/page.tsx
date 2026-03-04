@@ -297,7 +297,8 @@ export default function DocumentDetailPage() {
                       body: JSON.stringify({ id: doc.id, action: "update_amount", amount: val }),
                     });
                     if (res.ok) {
-                      setDoc({ ...doc, amount: val });
+                      const updated = await res.json();
+                      setDoc({ ...doc, ...updated });
                     } else {
                       alert("保存に失敗しました");
                     }
