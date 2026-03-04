@@ -84,24 +84,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = await req.json();
-    const { message } = body;
-
-    if (!message) {
-      return NextResponse.json(
-        { error: "Message is required" },
-        { status: 400 }
-      );
-    }
-
-    if (typeof message !== "string" || message.length > 3000) {
-      return NextResponse.json(
-        { error: "メッセージは3000文字以内にしてください" },
-        { status: 400 }
-      );
-    }
-
-    // Auth required (Cookie-based)
+    // Auth required (Cookie-based) — 認証を先に実行
     const supabaseClient = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -121,6 +104,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "認証が必要です。再ログインしてください" },
         { status: 401 }
+      );
+    }
+
+    const body = await req.json();
+    const { message } = body;
+
+    if (!message) {
+      return NextResponse.json(
+        { error: "Message is required" },
+        { status: 400 }
+      );
+    }
+
+    if (typeof message !== "string" || message.length > 3000) {
+      return NextResponse.json(
+        { error: "メッセージは3000文字以内にしてください" },
+        { status: 400 }
       );
     }
 

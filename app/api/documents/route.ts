@@ -166,6 +166,16 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
+
+    if (!body.sender || typeof body.sender !== "string" || !body.type || typeof body.type !== "string") {
+      return NextResponse.json({ error: "送付元と書類種別は必須です" }, { status: 400 });
+    }
+
+    const validCategories = ["urgent", "action", "keep", "ignore"];
+    if (body.category && !validCategories.includes(body.category)) {
+      return NextResponse.json({ error: "無効なカテゴリです" }, { status: 400 });
+    }
+
     const doc = {
       user_id: user.id,
       sender: body.sender,

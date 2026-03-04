@@ -2,13 +2,13 @@
 id: task-048
 title: API入力バリデーション・認証チェック順序・レート制限修正
 parents: [セキュリティ, バグ修正]
-status: waiting
+status: done
 priority: medium
 depends_on: []
 this_week: true
-completed_at: null
-progress: 0
-note: "chat認証順序 + documents POSTバリデーション + regenerateレート制限修正"
+completed_at: 2026-03-05
+progress: 100
+note: "chat認証順序修正 + documents POSTバリデーション追加（regenerateレート制限は現状維持）"
 estimated_hours: 1
 ---
 
