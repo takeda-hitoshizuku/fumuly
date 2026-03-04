@@ -80,7 +80,7 @@ export default function LegalPage() {
           ))}
         </div>
 
-        <p className="text-xs text-ignore mt-6">制定日：2026年2月23日</p>
+        <p className="text-xs text-ignore mt-6">制定日：2026年2月23日 ／ 最終更新日：2026年3月5日</p>
       </div>
     </div>
   );
