@@ -2,13 +2,13 @@
 id: task-055
 title: リマインダー機能 — 期限ベースのリマインド管理
 parents: [機能, UI/UX]
-status: waiting
+status: done
 priority: high
 depends_on: []
 this_week: true
-completed_at: null
-progress: 0
-note: ""
+completed_at: 2026-03-05
+progress: 100
+note: "DB+API+書類詳細UI+ホームバナー。プッシュ通知はtask-057で別途対応"
 estimated_hours: 5
 ---
 

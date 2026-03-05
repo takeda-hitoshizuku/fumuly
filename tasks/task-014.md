@@ -2,13 +2,13 @@
 id: task-014
 title: スマホのリマインダー・カレンダー連携
 parents: [機能]
-status: waiting
+status: omit
 priority: low
 depends_on: [task-005]
 this_week: false
-completed_at: null
+completed_at: 2026-03-05
 progress: 0
-note: "保留: task-005の後。カレンダー連携"
+note: "見送り: task-056（Google Calendar URL）とtask-057（Web Push）で主要機能をカバー済み。.ics/Google OAuth方式は不要と判断"
 estimated_hours: 8
 ---
 
