@@ -68,6 +68,7 @@ export default function DocumentDetailPage() {
   const [reminders, setReminders] = useState<{ id: string; remind_at: string; type: string }[]>([]);
   const [showReminderPicker, setShowReminderPicker] = useState(false);
   const [savingReminder, setSavingReminder] = useState(false);
+  const [customReminderDate, setCustomReminderDate] = useState("");
 
   useEffect(() => {
     const fetchDocument = async () => {
@@ -589,7 +590,7 @@ export default function DocumentDetailPage() {
               <Bell className="h-3 w-3" />
               リマインダー
             </p>
-            {doc.deadline && !doc.is_done && !doc.is_archived && (
+            {!doc.is_done && !doc.is_archived && (
               <button
                 onClick={() => setShowReminderPicker(!showReminderPicker)}
                 className="text-xs text-primary font-medium"
@@ -624,7 +625,7 @@ export default function DocumentDetailPage() {
             </div>
           ) : (
             <p className="text-xs text-sub">
-              {doc.deadline && !doc.is_done ? "リマインダーが設定されていません" : "期限のある書類にリマインダーを設定できます"}
+              {!doc.is_done ? "リマインダーが設定されていません" : "対応済みの書類です"}
             </p>
           )}
 
@@ -646,22 +647,52 @@ export default function DocumentDetailPage() {
 
           {/* リマインダー追加ピッカー */}
           {showReminderPicker && (
-            <div className="mt-3 pt-3 border-t space-y-2">
-              <p className="text-xs text-sub">期限からの日数を選択</p>
-              <div className="flex flex-wrap gap-2">
-                {getReminderPresets().map((preset) => (
+            <div className="mt-3 pt-3 border-t space-y-3">
+              {/* プリセット（期限がある場合のみ） */}
+              {doc.deadline && getReminderPresets().length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-xs text-sub">期限からの日数を選択</p>
+                  <div className="flex flex-wrap gap-2">
+                    {getReminderPresets().map((preset) => (
+                      <button
+                        key={preset.label}
+                        onClick={() => addReminder(preset.date)}
+                        disabled={savingReminder}
+                        className="text-xs px-3 py-1.5 bg-primary/10 text-primary rounded-full active:bg-primary/20 disabled:opacity-50"
+                      >
+                        {preset.label}（{preset.date.getMonth() + 1}/{preset.date.getDate()}）
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {/* 日時手入力 */}
+              <div className="space-y-2">
+                <p className="text-xs text-sub">日時を指定</p>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="datetime-local"
+                    value={customReminderDate}
+                    onChange={(e) => setCustomReminderDate(e.target.value)}
+                    className="flex-1 text-sm border rounded-lg px-3 py-2 text-foreground bg-background"
+                  />
                   <button
-                    key={preset.label}
-                    onClick={() => addReminder(preset.date)}
-                    disabled={savingReminder}
-                    className="text-xs px-3 py-1.5 bg-primary/10 text-primary rounded-full active:bg-primary/20 disabled:opacity-50"
+                    onClick={() => {
+                      if (!customReminderDate) return;
+                      const d = new Date(customReminderDate);
+                      if (isNaN(d.getTime()) || d <= new Date()) {
+                        alert("未来の日時を指定してください");
+                        return;
+                      }
+                      addReminder(d);
+                      setCustomReminderDate("");
+                    }}
+                    disabled={savingReminder || !customReminderDate}
+                    className="text-xs px-4 py-2 bg-primary text-white rounded-lg active:bg-primary/90 disabled:opacity-50"
                   >
-                    {preset.label}（{preset.date.getMonth() + 1}/{preset.date.getDate()}）
+                    設定
                   </button>
-                ))}
-                {getReminderPresets().length === 0 && (
-                  <p className="text-xs text-sub">期限が過去または近すぎるため、選択肢がありません</p>
-                )}
+                </div>
               </div>
             </div>
           )}

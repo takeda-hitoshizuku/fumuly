@@ -49,3 +49,7 @@ CREATE TABLE reminders (
 - 新規: `app/(main)/reminders/` — リマインダー一覧画面
 - 変更: `app/(main)/documents/[id]/page.tsx` — リマインダー設定UI追加
 - 変更: `app/(main)/home/page.tsx` — 直近リマインダー表示追加
+
+## 追加改善（2026-03-05）
+- カスタム日時の手入力UI（`datetime-local`）を追加。プリセット選択に加え、任意の日時でリマインダーを設定可能に
+- 期限（deadline）がない書類でもリマインダーを追加可能に変更（「この日に対応する」的な使い方に対応）

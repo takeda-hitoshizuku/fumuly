@@ -59,3 +59,6 @@ CREATE TABLE push_subscriptions (
 - `NEXT_PUBLIC_VAPID_PUBLIC_KEY` — VAPID公開鍵（クライアントにも埋め込まれるためNEXT_PUBLIC_プレフィックス）
 - `VAPID_PRIVATE_KEY` — VAPID秘密鍵
 - `CRON_SECRET` — Vercel Proでは自動生成される（手動設定不要）
+
+## 追加改善（2026-03-05）
+- 設定画面のプッシュ通知トグルUIを自作CSS実装からshadcn/ui `Switch`コンポーネントに置き換え（表示ズレ修正）

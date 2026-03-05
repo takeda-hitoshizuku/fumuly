@@ -31,6 +31,7 @@ import {
   Bell,
   BellOff,
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
 
 type PlanInfo = {
@@ -297,23 +298,14 @@ export default function SettingsPage() {
                 </p>
               </div>
             </div>
-            <button
-              onClick={togglePush}
-              disabled={pushLoading}
-              className={`relative w-11 h-6 rounded-full transition-colors ${
-                pushEnabled ? "bg-accent" : "bg-ignore/30"
-              }`}
-            >
-              {pushLoading ? (
-                <Loader2 className="h-3 w-3 animate-spin absolute top-1.5 left-4 text-white" />
-              ) : (
-                <span
-                  className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
-                    pushEnabled ? "translate-x-[22px]" : "translate-x-0.5"
-                  }`}
-                />
-              )}
-            </button>
+            {pushLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-sub" />
+            ) : (
+              <Switch
+                checked={pushEnabled}
+                onCheckedChange={togglePush}
+              />
+            )}
           </div>
         </div>
       )}
