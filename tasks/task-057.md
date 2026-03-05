@@ -46,3 +46,16 @@ CREATE TABLE push_subscriptions (
   UNIQUE(user_id, endpoint)
 );
 ```
+
+## デプロイ時の注意事項
+
+### Vercelプラン要件
+- `vercel.json`にCron Jobs（15分間隔）を設定しているため、**Vercel Proプラン必須**
+- Hobbyプランでは1日1回制限があり、15分間隔のcronが含まれるとデプロイ自体がブロックされる
+- 2026-03-05にHobby→Proへ移行して解決
+
+### Vercel環境変数（必須）
+以下がVercelに設定されていないとビルドエラーになる（`No key set vapidDetails.publicKey`）:
+- `NEXT_PUBLIC_VAPID_PUBLIC_KEY` — VAPID公開鍵（クライアントにも埋め込まれるためNEXT_PUBLIC_プレフィックス）
+- `VAPID_PRIVATE_KEY` — VAPID秘密鍵
+- `CRON_SECRET` — Vercel Proでは自動生成される（手動設定不要）
