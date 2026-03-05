@@ -157,9 +157,9 @@ export default function LandingPage() {
           </h2>
         </div>
         {/* Snap scroll on mobile, grid on PC */}
-        <div className="flex snap-x snap-mandatory overflow-x-auto gap-5 px-[calc((100vw-70vw)/2)] pb-4 sm:grid sm:grid-cols-3 sm:overflow-visible sm:snap-none sm:gap-8 lg:gap-12 sm:px-4 sm:max-w-3xl sm:mx-auto scrollbar-hide">
+        <div className="flex snap-x snap-mandatory overflow-x-auto gap-5 px-[calc((100vw-60vw)/2)] pb-4 sm:grid sm:grid-cols-3 sm:overflow-visible sm:snap-none sm:gap-8 lg:gap-12 sm:px-4 sm:max-w-3xl sm:mx-auto scrollbar-hide">
           {/* Step 1: 写真を撮る */}
-          <div className="snap-center shrink-0 w-[70vw] sm:w-auto flex flex-col items-center text-center">
+          <div className="snap-center shrink-0 w-[60vw] sm:w-auto flex flex-col items-center text-center">
             <div className="text-sm font-bold text-[#F4845F] mb-3">Step 1</div>
             <h3 className="font-bold text-[#2D2D2D] mb-1">写真を撮る</h3>
             <p className="text-sm text-[#757575] mb-4">
@@ -189,7 +189,7 @@ export default function LandingPage() {
           </div>
 
           {/* Step 2: AIが読む */}
-          <div className="snap-center shrink-0 w-[70vw] sm:w-auto flex flex-col items-center text-center">
+          <div className="snap-center shrink-0 w-[60vw] sm:w-auto flex flex-col items-center text-center">
             <div className="text-sm font-bold text-[#2C4A7C] mb-3">Step 2</div>
             <h3 className="font-bold text-[#2D2D2D] mb-1">AIが読む</h3>
             <p className="text-sm text-[#757575] mb-4">
@@ -231,7 +231,7 @@ export default function LandingPage() {
           </div>
 
           {/* Step 3: 相談する */}
-          <div className="snap-center shrink-0 w-[70vw] sm:w-auto flex flex-col items-center text-center">
+          <div className="snap-center shrink-0 w-[60vw] sm:w-auto flex flex-col items-center text-center">
             <div className="text-sm font-bold text-keep mb-3">Step 3</div>
             <h3 className="font-bold text-[#2D2D2D] mb-1">相談する</h3>
             <p className="text-sm text-[#757575] mb-4">
