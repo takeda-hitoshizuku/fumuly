@@ -150,51 +150,128 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section className="py-16 lg:py-24 px-4 bg-[#F7F8FA]">
-        <div className="max-w-5xl mx-auto">
+      <section className="py-16 lg:py-24 bg-[#F7F8FA]">
+        <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-2xl lg:text-3xl font-bold text-center text-[#2D2D2D] mb-12 lg:mb-16">
             使い方は、たったの3ステップ
           </h2>
-          <div className="grid sm:grid-cols-3 gap-8 lg:gap-12 max-w-3xl mx-auto">
-            <div className="text-center">
-              <div className="mx-auto w-16 h-16 lg:w-20 lg:h-20 bg-[#F4845F]/10 rounded-2xl flex items-center justify-center mb-4">
-                <Camera className="h-7 w-7 lg:h-9 lg:w-9 text-[#F4845F]" />
+        </div>
+        {/* Snap scroll on mobile, grid on PC */}
+        <div className="flex snap-x snap-mandatory overflow-x-auto gap-4 px-4 pb-4 sm:grid sm:grid-cols-3 sm:overflow-visible sm:snap-none sm:gap-8 lg:gap-12 max-w-3xl sm:mx-auto scrollbar-hide">
+          {/* Step 1: 写真を撮る */}
+          <div className="snap-center shrink-0 w-[85vw] sm:w-auto flex flex-col items-center text-center">
+            <div className="text-sm font-bold text-[#F4845F] mb-3">Step 1</div>
+            <h3 className="font-bold text-[#2D2D2D] mb-1">写真を撮る</h3>
+            <p className="text-sm text-[#757575] mb-4">
+              封筒の中身をスマホで撮影。
+              <br />
+              開封するだけでOK。
+            </p>
+            {/* Phone mockup - Scan */}
+            <div className="w-[220px] bg-white rounded-[28px] border-2 border-[#E5E7EB] shadow-xl overflow-hidden">
+              <div className="h-5 bg-[#F7F8FA] flex items-center justify-center">
+                <div className="w-16 h-1.5 bg-[#E5E7EB] rounded-full" />
               </div>
-              <div className="text-sm font-bold text-[#F4845F] mb-1">
-                Step 1
+              <div className="px-3 pt-3 pb-4">
+                <p className="text-[11px] font-bold text-[#2D2D2D] mb-2">書類をスキャン</p>
+                <div className="border-2 border-dashed border-[#E5E7EB] rounded-xl aspect-[4/3] flex flex-col items-center justify-center gap-1.5">
+                  <div className="w-8 h-8 bg-[#F4845F]/10 rounded-full flex items-center justify-center">
+                    <Camera className="h-4 w-4 text-[#F4845F]" />
+                  </div>
+                  <p className="text-[9px] text-[#757575]">タップして撮影</p>
+                </div>
+                <div className="mt-2 flex items-center justify-center gap-1 text-[9px] text-[#757575]">
+                  <Camera className="h-2.5 w-2.5" />
+                  ライブラリから選択
+                </div>
               </div>
-              <h3 className="font-bold text-[#2D2D2D] mb-1">写真を撮る</h3>
-              <p className="text-sm text-[#757575]">
-                封筒の中身をスマホで撮影。
-                <br />
-                開封するだけでOK。
-              </p>
             </div>
-            <div className="text-center">
-              <div className="mx-auto w-16 h-16 lg:w-20 lg:h-20 bg-[#2C4A7C]/10 rounded-2xl flex items-center justify-center mb-4">
-                <Sparkles className="h-7 w-7 lg:h-9 lg:w-9 text-[#2C4A7C]" />
+          </div>
+
+          {/* Step 2: AIが読む */}
+          <div className="snap-center shrink-0 w-[85vw] sm:w-auto flex flex-col items-center text-center">
+            <div className="text-sm font-bold text-[#2C4A7C] mb-3">Step 2</div>
+            <h3 className="font-bold text-[#2D2D2D] mb-1">AIが読む</h3>
+            <p className="text-sm text-[#757575] mb-4">
+              送付元、金額、期限を自動抽出。
+              <br />
+              緊急度を色で表示。
+            </p>
+            {/* Phone mockup - Document detail */}
+            <div className="w-[220px] bg-white rounded-[28px] border-2 border-[#E5E7EB] shadow-xl overflow-hidden">
+              <div className="h-5 bg-[#F7F8FA] flex items-center justify-center">
+                <div className="w-16 h-1.5 bg-[#E5E7EB] rounded-full" />
               </div>
-              <div className="text-sm font-bold text-[#2C4A7C] mb-1">
-                Step 2
+              <div className="px-3 pt-2 pb-4 text-left">
+                <span className="inline-block bg-urgent text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold mb-1.5">
+                  緊急対応
+                </span>
+                <div className="bg-[#F7F8FA] rounded-lg p-2 mb-2 space-y-1.5">
+                  <div>
+                    <p className="text-[8px] text-[#757575]">送付元</p>
+                    <p className="text-[10px] font-bold text-[#2D2D2D]">さくら市納税課</p>
+                  </div>
+                  <div>
+                    <p className="text-[8px] text-[#757575]">金額</p>
+                    <p className="text-[10px] font-bold text-[#2D2D2D]">¥42,000</p>
+                  </div>
+                  <div>
+                    <p className="text-[8px] text-[#757575]">期限</p>
+                    <p className="text-[10px] font-bold text-urgent">2026-09-30</p>
+                  </div>
+                </div>
+                <div className="bg-[#FFF8F0] rounded-lg p-2">
+                  <p className="text-[8px] font-bold text-[#F4845F] mb-0.5">次にすべきこと</p>
+                  <p className="text-[8px] text-[#757575] leading-relaxed">
+                    コンビニ・銀行で納付書を使って支払う。またはWebサイトで分割納付の相談を。
+                  </p>
+                </div>
               </div>
-              <h3 className="font-bold text-[#2D2D2D] mb-1">AIが読む</h3>
-              <p className="text-sm text-[#757575]">
-                送付元、金額、期限を自動抽出。
-                <br />
-                緊急度を色で表示。
-              </p>
             </div>
-            <div className="text-center">
-              <div className="mx-auto w-16 h-16 lg:w-20 lg:h-20 bg-keep/10 rounded-2xl flex items-center justify-center mb-4">
-                <MessageCircle className="h-7 w-7 lg:h-9 lg:w-9 text-keep" />
+          </div>
+
+          {/* Step 3: 相談する */}
+          <div className="snap-center shrink-0 w-[85vw] sm:w-auto flex flex-col items-center text-center">
+            <div className="text-sm font-bold text-keep mb-3">Step 3</div>
+            <h3 className="font-bold text-[#2D2D2D] mb-1">相談する</h3>
+            <p className="text-sm text-[#757575] mb-4">
+              「これどうすれば？」をAIに相談。
+              <br />
+              電話なしの対処法を案内。
+            </p>
+            {/* Phone mockup - Chat */}
+            <div className="w-[220px] bg-white rounded-[28px] border-2 border-[#E5E7EB] shadow-xl overflow-hidden">
+              <div className="h-5 bg-[#F7F8FA] flex items-center justify-center">
+                <div className="w-16 h-1.5 bg-[#E5E7EB] rounded-full" />
               </div>
-              <div className="text-sm font-bold text-keep mb-1">Step 3</div>
-              <h3 className="font-bold text-[#2D2D2D] mb-1">相談する</h3>
-              <p className="text-sm text-[#757575]">
-                「これどうすれば？」をAIに相談。
-                <br />
-                電話なしの対処法を案内。
-              </p>
+              <div className="px-3 pt-2 pb-4">
+                <p className="text-[11px] font-bold text-[#2D2D2D] mb-2">AIに相談</p>
+                <div className="space-y-2">
+                  {/* User message */}
+                  <div className="flex justify-end">
+                    <div className="bg-[#2C4A7C] text-white text-[8px] rounded-xl rounded-br-sm px-2.5 py-1.5 max-w-[75%]">
+                      督促状が届いたけど怖い
+                    </div>
+                  </div>
+                  {/* AI message */}
+                  <div className="flex justify-start">
+                    <div className="bg-[#F7F8FA] text-[#2D2D2D] text-[8px] rounded-xl rounded-bl-sm px-2.5 py-1.5 max-w-[85%] leading-relaxed">
+                      <p className="font-bold mb-0.5">大丈夫、まだ間に合います。</p>
+                      <p>まずはコンビニで納付書を使って支払えます。分割も相談可能です。</p>
+                      <p className="text-[#2C4A7C] mt-1">電話不要でWebから申請できます</p>
+                    </div>
+                  </div>
+                </div>
+                {/* Input */}
+                <div className="mt-2 flex items-center gap-1.5">
+                  <div className="flex-1 bg-[#F7F8FA] rounded-lg px-2 py-1 text-[8px] text-[#B0B0B0]">
+                    メッセージを入力...
+                  </div>
+                  <div className="w-5 h-5 bg-[#2C4A7C] rounded-md flex items-center justify-center shrink-0">
+                    <ChevronRight className="h-2.5 w-2.5 text-white" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
