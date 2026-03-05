@@ -1,23 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronLeft, Loader2, Check, Pencil, Mail, Lock, UserCircle } from "lucide-react";
+import { ChevronLeft, Loader2, Check, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
 const incomeTypes = [
   { value: "salary", label: "給与（会社員）" },
@@ -41,7 +30,6 @@ type Profile = {
 };
 
 export default function ProfilePage() {
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -49,12 +37,9 @@ export default function ProfilePage() {
 
   // Account state
   const [displayName, setDisplayName] = useState("");
-  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
-  const [newEmail, setNewEmail] = useState("");
-  const [savingEmail, setSavingEmail] = useState(false);
-  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
-  const [newPassword, setNewPassword] = useState("");
-  const [savingPassword, setSavingPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("●●●●●●●●");
+  const PASSWORD_PLACEHOLDER = "●●●●●●●●";
 
   // Form state
   const [incomeType, setIncomeType] = useState("");
@@ -77,6 +62,7 @@ export default function ProfilePage() {
       if (data) {
         setProfile(data);
         setDisplayName(data.display_name ?? "");
+        setEmail(data.email ?? "");
         setIncomeType(data.income_type ?? "");
         setMonthlyIncome(
           data.monthly_income != null ? String(data.monthly_income) : ""
@@ -115,6 +101,7 @@ export default function ProfilePage() {
     };
 
     try {
+      // Profile update
       const res = await fetch("/api/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -132,7 +119,39 @@ export default function ProfilePage() {
         return;
       }
 
-      setProfile({ ...updates, email: profile?.email ?? null });
+      // Email update (if changed)
+      if (email && email !== profile?.email) {
+        const emailRes = await fetch("/api/account", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "update_email", email }),
+        });
+        if (!emailRes.ok) {
+          const data = await emailRes.json().catch(() => null);
+          alert(data?.error || "メールアドレスの変更に失敗しました");
+          setSaving(false);
+          return;
+        }
+      }
+
+      // Password update (if changed from placeholder)
+      if (password !== PASSWORD_PLACEHOLDER && password.length >= 6) {
+        const pwRes = await fetch("/api/account", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "update_password", password }),
+        });
+        if (!pwRes.ok) {
+          const data = await pwRes.json().catch(() => null);
+          alert(data?.error || "パスワードの変更に失敗しました");
+          setSaving(false);
+          return;
+        }
+      }
+
+      const savedEmail = email && email !== profile?.email ? email : (profile?.email ?? null);
+      setProfile({ ...updates, email: savedEmail });
+      setPassword(PASSWORD_PLACEHOLDER);
       setSaving(false);
       setEditing(false);
     } catch {
@@ -198,123 +217,33 @@ export default function ProfilePage() {
         </div>
 
         {/* Email */}
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs text-sub">メールアドレス</p>
+        <div>
+          <p className="text-xs text-sub">メールアドレス</p>
+          {editing ? (
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 h-10"
+            />
+          ) : (
             <p className="text-sm text-foreground mt-1">{profile?.email || "未設定"}</p>
-          </div>
-          <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
-            <DialogTrigger asChild>
-              <button className="flex items-center gap-1 text-xs text-primary">
-                <Mail className="h-3 w-3" />
-                変更
-              </button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>メールアドレスの変更</DialogTitle>
-                <DialogDescription>
-                  新しいメールアドレスを入力してください。
-                </DialogDescription>
-              </DialogHeader>
-              <Input
-                type="email"
-                placeholder="新しいメールアドレス"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-                className="h-12"
-              />
-              <DialogFooter>
-                <Button
-                  onClick={async () => {
-                    setSavingEmail(true);
-                    try {
-                      const res = await fetch("/api/account", {
-                        method: "PATCH",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ action: "update_email", email: newEmail }),
-                      });
-                      if (res.ok) {
-                        setProfile(profile ? { ...profile, email: newEmail } : null);
-                        setEmailDialogOpen(false);
-                        setNewEmail("");
-                      } else {
-                        const data = await res.json().catch(() => null);
-                        alert(data?.error || "変更に失敗しました");
-                      }
-                    } catch {
-                      alert("変更に失敗しました");
-                    }
-                    setSavingEmail(false);
-                  }}
-                  disabled={savingEmail || !newEmail}
-                  className="w-full h-12"
-                >
-                  {savingEmail ? <Loader2 className="h-4 w-4 animate-spin" /> : "変更する"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          )}
         </div>
 
         {/* Password */}
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs text-sub">パスワード</p>
+        <div>
+          <p className="text-xs text-sub">パスワード</p>
+          {editing ? (
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 h-10"
+            />
+          ) : (
             <p className="text-sm text-foreground mt-1">••••••••</p>
-          </div>
-          <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
-            <DialogTrigger asChild>
-              <button className="flex items-center gap-1 text-xs text-primary">
-                <Lock className="h-3 w-3" />
-                変更
-              </button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>パスワードの変更</DialogTitle>
-                <DialogDescription>
-                  新しいパスワードを入力してください（6文字以上）。
-                </DialogDescription>
-              </DialogHeader>
-              <Input
-                type="password"
-                placeholder="新しいパスワード"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="h-12"
-              />
-              <DialogFooter>
-                <Button
-                  onClick={async () => {
-                    setSavingPassword(true);
-                    try {
-                      const res = await fetch("/api/account", {
-                        method: "PATCH",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ action: "update_password", password: newPassword }),
-                      });
-                      if (res.ok) {
-                        setPasswordDialogOpen(false);
-                        setNewPassword("");
-                        alert("パスワードを変更しました");
-                      } else {
-                        const data = await res.json().catch(() => null);
-                        alert(data?.error || "変更に失敗しました");
-                      }
-                    } catch {
-                      alert("変更に失敗しました");
-                    }
-                    setSavingPassword(false);
-                  }}
-                  disabled={savingPassword || newPassword.length < 6}
-                  className="w-full h-12"
-                >
-                  {savingPassword ? <Loader2 className="h-4 w-4 animate-spin" /> : "変更する"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          )}
         </div>
       </div>
 
