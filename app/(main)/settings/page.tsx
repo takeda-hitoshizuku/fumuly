@@ -451,19 +451,19 @@ export default function SettingsPage() {
               </div>
               <div className="flex-1 text-left">
                 <p className="text-sm font-medium text-urgent">
-                  すべてのデータを削除
+                  アカウントを削除
                 </p>
                 <p className="text-xs text-sub">
-                  書類・会話履歴・プロフィールを削除
+                  退会し、すべてのデータを削除します
                 </p>
               </div>
             </button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>本当にすべてのデータを削除しますか？</DialogTitle>
+              <DialogTitle>退会しますか？</DialogTitle>
               <DialogDescription>
-                書類の解析結果、会話履歴、プロフィール情報がすべて削除されます。この操作は元に戻せません。
+                書類・会話履歴・プロフィール情報がすべて削除されます。この操作は元に戻せません。
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -475,7 +475,7 @@ export default function SettingsPage() {
                 {deleting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  "すべて削除する"
+                  "退会する"
                 )}
               </Button>
             </DialogFooter>
