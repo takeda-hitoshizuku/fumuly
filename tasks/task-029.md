@@ -22,3 +22,18 @@ estimated_hours: 0.05
   - 「プロフィールを設定すると、あなたに合ったアドバイスが受けられます」
 - チャット画面にも同様の軽い告知
 - プロフィールが `income_type` も `monthly_income` も未設定の場合に表示
+
+## 実装内容
+
+### 判定条件
+- `income_type` が未設定 かつ `monthly_income` が null の場合に `profileIncomplete = true`
+
+### ホーム画面（`app/(main)/home/page.tsx`）
+- プロフィール未入力時にバナーを表示
+- 「プロフィールを設定しませんか？ あなたに合ったアドバイスが受けられます」
+- `/settings/profile` へのリンク付き
+
+### チャット画面（`app/(main)/chat/page.tsx`）
+- AIの最後の応答の下に軽い告知リンクを表示
+- 「プロフィールを設定するとより的確なアドバイスが受けられます」
+- 設定アイコン + `/settings/profile` へのリンク
