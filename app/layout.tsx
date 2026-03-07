@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Fumuly（フムリー）| 封筒、無理ー！を解決するAIアプリ",
     description:
       "写真を撮るだけでAIが書類を読んで整理。督促も年金も、何をすべきか教えてくれる。",
