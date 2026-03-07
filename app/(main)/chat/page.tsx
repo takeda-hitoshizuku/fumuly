@@ -114,6 +114,11 @@ export default function ChatPage() {
         window.location.href = "/login";
         return;
       }
+      if (res.status === 403) {
+        setIsFreeUser(true);
+        setMessages([]);
+        return;
+      }
       if (res.status === 429) {
         const err = await res.json();
         setMessages([

@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
       .eq("id", user.id)
       .single();
 
-    // Rate limit: free users = 5 scans/month, paid/VIP/admin = unlimited
+    // Rate limit: free users = 1 scan/month, paid/VIP/admin = unlimited
     const FREE_MONTHLY_LIMIT = 1;
     const isAdmin = user.id === process.env.ADMIN_USER_ID;
     if (profile && !isPremiumUser(profile) && !isAdmin) {

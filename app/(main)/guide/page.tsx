@@ -184,6 +184,7 @@ export default function GuidePage() {
             <h3 className="font-bold text-sm text-[#2D2D2D] mb-2 flex items-center gap-1.5">
               <MessageCircle className="h-4 w-4 text-keep" />
               AIチャット相談
+              <span className="text-[10px] font-normal text-[#F4845F] ml-1">有料プラン</span>
             </h3>
             <ul className="space-y-1.5 text-sm text-[#757575]">
               <li className="flex items-start gap-2">

@@ -258,22 +258,22 @@ base64エンコード → Claude Vision APIへ送信（解析のみ）
 
 | API | 無料ユーザー | 有料/VIP | 管理者（ADMIN_USER_ID） |
 |-----|------------|---------|----------------------|
-| スキャン（`/api/analyze`） | 月5件 | 無制限 | 無制限 |
-| チャット（`/api/chat`） | 20回/時 | 20回/時 | 無制限 |
+| スキャン（`/api/analyze`） | 月1件 | 無制限 | 無制限 |
+| チャット（`/api/chat`） | 利用不可 | 20回/時 | 無制限 |
 | 再生成（`/api/regenerate`） | 50件/日 | 50件/日 | 無制限 |
 
 **判定ロジック:**
 - 管理者: `user.id === process.env.ADMIN_USER_ID` → 全制限免除
-- 有料/VIP: `isPremiumUser(profile)` → `plan === 'paid' || is_vip === true` → スキャン無制限
+- 有料/VIP: `isPremiumUser(profile)` → `plan === 'paid' || is_vip === true` → スキャン無制限・チャット利用可
 - スキャン件数: `documents` テーブルで当月のレコード数をカウント
-- チャット回数: `conversations` テーブルで直近1時間の user メッセージ数をカウント
+- チャット: 無料ユーザーは `isPremiumUser()` で403ブロック、有料ユーザーは `conversations` テーブルで直近1時間の user メッセージ数をカウント
 
 ---
 
 ## 決済（Stripe）
 
 **料金プラン:**
-- 無料: 0円（月5通スキャン）
+- 無料: 0円（月1通スキャン、チャット利用不可）
 - 月額: 480円（税込）
 - 年額: 4,400円（税込、約23%OFF）
 
