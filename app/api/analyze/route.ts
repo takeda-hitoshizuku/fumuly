@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       .single();
 
     // Rate limit: free users = 5 scans/month, paid/VIP/admin = unlimited
-    const FREE_MONTHLY_LIMIT = 5;
+    const FREE_MONTHLY_LIMIT = 1;
     const isAdmin = user.id === process.env.ADMIN_USER_ID;
     if (profile && !isPremiumUser(profile) && !isAdmin) {
       const now = new Date();
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
 
       if (count !== null && count >= FREE_MONTHLY_LIMIT) {
         return NextResponse.json(
-          { error: "今月のスキャン上限（5通）に達しました。有料プランにアップグレードすると無制限にスキャンできます" },
+          { error: "今月のスキャン上限（1通）に達しました。有料プランにアップグレードすると無制限にスキャンできます" },
           { status: 429 }
         );
       }

@@ -117,7 +117,7 @@ export default function UpgradePage() {
                     : planInfo?.plan_type === "yearly"
                       ? "有料プラン（年額）"
                       : "有料プラン"
-                  : "無料プラン（月5通まで）"}
+                  : "無料プラン（月1通まで）"}
             </p>
           </div>
         </div>

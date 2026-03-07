@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@supabase/ssr";
 import { encrypt, decrypt } from "@/lib/encryption";
+import { isPremiumUser } from "@/lib/stripe";
 
 const supabaseAdmin = createClient(
   process.env.SUPABASE_URL!,
@@ -125,11 +126,27 @@ export async function POST(req: NextRequest) {
     }
 
     const userId = user.id;
+    const adminUserId = process.env.ADMIN_USER_ID;
+    const isAdmin = userId === adminUserId;
+
+    // Premium check: free users cannot use chat
+    if (!isAdmin) {
+      const { data: profile } = await supabaseAdmin
+        .from("profiles")
+        .select("plan, is_vip")
+        .eq("id", userId)
+        .single();
+
+      if (!profile || !isPremiumUser(profile)) {
+        return NextResponse.json(
+          { error: "AIチャット相談は有料プランの機能です。アップグレードするとご利用いただけます", upgrade: true },
+          { status: 403 }
+        );
+      }
+    }
 
     // Rate limit (skip for admin user)
     const RATE_LIMIT = 20;
-    const adminUserId = process.env.ADMIN_USER_ID;
-    const isAdmin = userId === adminUserId;
     let usedCount = 0;
 
     if (!isAdmin) {

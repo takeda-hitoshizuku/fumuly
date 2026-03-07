@@ -53,7 +53,7 @@ export const freePlan: PlanDefinition = {
   unit: "円",
   period: "",
   description: "まずは試してみたい方に",
-  features: ["月5通までスキャン", "AI書類解析", "AIチャット相談"],
+  features: ["月1通までスキャン", "AI書類解析"],
 };
 
 export const allPlans: PlanDefinition[] = [freePlan, ...paidPlans];

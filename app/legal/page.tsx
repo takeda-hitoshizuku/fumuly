@@ -19,7 +19,7 @@ const rows = [
   {
     label: "販売価格",
     value:
-      "無料プラン：0円（月5通まで）／月額プラン：480円（税込）／年額プラン：4,400円（税込）",
+      "無料プラン：0円（月1通までスキャン）／月額プラン：480円（税込）／年額プラン：4,400円（税込）",
   },
   {
     label: "支払方法",
@@ -80,7 +80,7 @@ export default function LegalPage() {
           ))}
         </div>
 
-        <p className="text-xs text-ignore mt-6">制定日：2026年2月23日 ／ 最終更新日：2026年3月5日</p>
+        <p className="text-xs text-ignore mt-6">制定日：2026年2月23日 ／ 最終更新日：2026年3月7日</p>
       </div>
     </div>
   );

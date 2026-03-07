@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/lib/supabase";
-import { Send, Loader2, Camera, Bot, User, Settings } from "lucide-react";
+import { Send, Loader2, Camera, Bot, User, Settings, Lock, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -23,6 +23,7 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [isFreeUser, setIsFreeUser] = useState(false);
 
   const [profileIncomplete, setProfileIncomplete] = useState(false);
   const keyboardOpen = useKeyboardOpen();
@@ -38,14 +39,19 @@ export default function ChatPage() {
       } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Check profile completeness
+      // Check profile completeness and plan
       const { data: profile } = await supabase
         .from("profiles")
-        .select("income_type, monthly_income")
+        .select("income_type, monthly_income, plan, is_vip")
         .eq("id", user.id)
         .single();
       if (profile && !profile.income_type && profile.monthly_income == null) {
         setProfileIncomplete(true);
+      }
+      if (profile && profile.plan !== "paid" && !profile.is_vip) {
+        setIsFreeUser(true);
+        setInitialLoading(false);
+        return;
       }
 
       // Fetch history via API (server-side decryption)
@@ -181,6 +187,29 @@ export default function ChatPage() {
           <div className="flex justify-center py-20">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
           </div>
+        ) : isFreeUser ? (
+          /* Free user upgrade prompt */
+          <div className="flex flex-col items-center justify-center h-full text-center space-y-4 py-10">
+            <div className="w-16 h-16 bg-[#F4845F]/10 rounded-full flex items-center justify-center">
+              <Lock className="h-7 w-7 text-[#F4845F]" />
+            </div>
+            <div>
+              <p className="font-bold text-foreground">
+                AIチャット相談は有料プランの機能です
+              </p>
+              <p className="text-sm text-sub mt-2 max-w-xs">
+                書類の内容、期限の確認、手続きの方法など
+                AIに何でも相談できるようになります
+              </p>
+            </div>
+            <Link href="/upgrade">
+              <Button className="bg-[#F4845F] hover:bg-[#F4845F]/90 text-white h-11 rounded-xl px-6 gap-2">
+                <Sparkles className="h-4 w-4" />
+                有料プランにアップグレード
+              </Button>
+            </Link>
+            <p className="text-xs text-ignore">月額480円（税込）から</p>
+          </div>
         ) : messages.length === 0 ? (
           /* Empty state */
           <div className="flex flex-col items-center justify-center h-full text-center space-y-4 py-10">
@@ -286,8 +315,8 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Input */}
-      <div className="border-t bg-white px-4 py-3 shrink-0">
+      {/* Input (hidden for free users) */}
+      {!isFreeUser && <div className="border-t bg-white px-4 py-3 shrink-0">
         <div className="flex items-end gap-2 max-w-md mx-auto">
           <div className="flex-1 relative">
             <Textarea
@@ -321,7 +350,7 @@ export default function ChatPage() {
         <p className="text-[10px] text-ignore text-center mt-1.5 max-w-md mx-auto">
           AIの回答は参考情報です。重要な判断は専門家にご相談ください。
         </p>
-      </div>
+      </div>}
     </div>
   );
 }
