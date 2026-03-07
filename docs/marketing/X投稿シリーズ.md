@@ -27,6 +27,8 @@
 
 fumuly.com
 
+同じ気持ちの人に届いたら嬉しいです。
+
 #Fumuly #封筒ムリー #ADHD #発達障害 #ADHDあるある
 ```
 
@@ -36,6 +38,8 @@ fumuly.com
 だからこの問題を解決するアプリ作りました。
 
 fumuly.com
+
+同じ気持ちの人に届いたら嬉しいです。
 
 #Fumuly #封筒ムリー #ADHD #発達障害 #ADHDあるある
 ```
@@ -49,6 +53,8 @@ fumuly.com
 
 fumuly.com
 
+同じ気持ちの人に届いたら嬉しいです。
+
 #Fumuly #封筒ムリー #ADHD #発達障害 #ADHDあるある
 ```
 
@@ -60,6 +66,8 @@ fumuly.com
 だからこの問題を解決するアプリ作りました。
 
 fumuly.com
+
+同じ気持ちの人に届いたら嬉しいです。
 
 #Fumuly #封筒ムリー #ADHD #発達障害 #ADHDあるある
 ```
@@ -73,6 +81,8 @@ fumuly.com
 
 fumuly.com
 
+同じ気持ちの人に届いたら嬉しいです。
+
 #Fumuly #封筒ムリー #ADHD #発達障害 #ADHDあるある
 ```
 
@@ -84,6 +94,8 @@ fumuly.com
 だからこの問題を解決するアプリ作りました。
 
 fumuly.com
+
+同じ気持ちの人に届いたら嬉しいです。
 
 #Fumuly #封筒ムリー #ADHD #発達障害 #ADHDあるある
 ```
@@ -97,6 +109,8 @@ fumuly.com
 
 fumuly.com
 
+同じ気持ちの人に届いたら嬉しいです。
+
 #Fumuly #封筒ムリー #ADHD #発達障害 #ADHDあるある #時間盲
 ```
 
@@ -107,6 +121,8 @@ fumuly.com
 だからこの問題を解決するアプリ作りました。
 
 fumuly.com
+
+同じ気持ちの人に届いたら嬉しいです。
 
 #Fumuly #封筒ムリー #ADHD #発達障害 #ADHDあるある #先延ばし
 ```
@@ -121,6 +137,8 @@ fumuly.com
 
 fumuly.com
 
+同じ気持ちの人に届いたら嬉しいです。
+
 #Fumuly #封筒ムリー #ADHD #発達障害 #ADHDあるある
 ```
 
@@ -131,6 +149,8 @@ fumuly.com
 だからこの問題を解決するアプリ作りました。
 
 fumuly.com
+
+同じ気持ちの人に届いたら嬉しいです。
 
 #Fumuly #封筒ムリー #ADHD #発達障害 #ADHDあるある #先延ばし
 ```
@@ -144,6 +164,8 @@ fumuly.com
 だからこの問題を解決するアプリ作りました。
 
 fumuly.com
+
+同じ気持ちの人に届いたら嬉しいです。
 
 #Fumuly #封筒ムリー #ADHD #発達障害 #ADHDあるある #拒絶感受性
 ```
