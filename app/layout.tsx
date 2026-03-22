@@ -22,6 +22,9 @@ export const metadata: Metadata = {
     "写真を撮るだけでAIが書類を読んで整理。督促も年金も、何をすべきか教えてくれる。電話なしの対処法を優先案内。",
   manifest: "/manifest.json",
   metadataBase: new URL("https://fumuly.com"),
+  alternates: {
+    canonical: "https://fumuly.com",
+  },
   openGraph: {
     title: "Fumuly（フムリー）| 封筒、無理ー！を解決するAIアプリ",
     description:
@@ -69,6 +72,39 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${notoSansJP.variable} antialiased`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "WebApplication",
+                  "name": "Fumuly",
+                  "alternateName": "フムリー",
+                  "url": "https://fumuly.com",
+                  "description":
+                    "写真を撮るだけでAIが書類を読んで整理。督促も年金も、何をすべきか教えてくれる。電話なしの対処法を優先案内。",
+                  "applicationCategory": "UtilitiesApplication",
+                  "operatingSystem": "Web",
+                  "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "JPY",
+                    "description": "無料プランあり",
+                  },
+                  "inLanguage": "ja",
+                },
+                {
+                  "@type": "Organization",
+                  "name": "Fumuly",
+                  "url": "https://fumuly.com",
+                  "logo": "https://fumuly.com/icons/icon-512x512.png",
+                },
+              ],
+            }),
+          }}
+        />
         <UpdateBanner />
         {children}
         {process.env.NEXT_PUBLIC_GA_ID && (

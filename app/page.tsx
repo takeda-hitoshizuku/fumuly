@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { QRSection } from "@/components/fumuly/qr-section";
@@ -12,6 +13,33 @@ import {
   Sparkles,
   Heart,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Fumuly（フムリー）| 封筒、無理ー！を解決するAIアプリ",
+  description:
+    "届いた封筒、写真を撮るだけでAIが書類を読んで整理。督促状・年金・税金・保険、何をすべきか教えてくれる。電話なしの対処法を優先案内。ADHD・一人暮らしの書類管理に。",
+  keywords: [
+    "Fumuly",
+    "フムリー",
+    "封筒管理",
+    "書類管理アプリ",
+    "AI書類解析",
+    "督促状",
+    "年金",
+    "税金",
+    "ADHD",
+    "一人暮らし",
+  ],
+  alternates: {
+    canonical: "https://fumuly.com",
+  },
+  openGraph: {
+    title: "Fumuly（フムリー）| 封筒、無理ー！を解決するAIアプリ",
+    description:
+      "届いた封筒、写真を撮るだけでAIが書類を読んで整理。督促も年金も、何をすべきか教えてくれる。",
+    url: "https://fumuly.com",
+  },
+};
 
 export default function LandingPage() {
   return (
